@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Memories Nawala - Internship Rumah BUMN Bri Makassar Batch 18</title>
+  <meta name="description" content="Yearbook interaktif berformat 3D flipbook bergaya One Piece untuk Intern Batch 18 Rumah BUMN Makassar (Nawala Crew).">
+  
+  <!-- Preconnect & Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+
+  <!-- OpenGraph Metadata untuk Share WhatsApp / Social Media -->
+  <meta property="og:title" content="Logbook Nawala - Batch 18 Rumah BUMN Makassar">
+  <meta property="og:description" content="Yearbook interaktif 3D bergaya One Piece untuk Kru Nawala Batch 18 Rumah BUMN Makassar.">
+  <meta property="og:image" content="assets/images/sampul%20fix.png">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon Icon -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=8.0">
+</head>
+<body>
+
+  <!-- Meja Nakhoda & Environment Utama -->
+  <main class="desk-viewport" id="deskViewport">
+    <div class="ambient-lighting" aria-hidden="true"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav-bar" id="topNavBar">
+      <img src="assets/images/LOGOKU.png" alt="Logo Nawala" class="top-logo-img">
+      <div class="title-wrapper">
+        <span class="main-title">YEAR BOOK NAWALA</span>
+        <span class="sub-title">BATCH 18 • RUMAH BUMN MAKASSAR</span>
+      </div>
+    </header>
+
+    <!-- Side Navigation Arrows (Desktop) -->
+    <button class="side-arrow prev" id="sidePrev" aria-label="Halaman Sebelumnya" title="Halaman Sebelumnya">❮</button>
+    <button class="side-arrow next" id="sideNext" aria-label="Halaman Selanjutnya" title="Halaman Selanjutnya">❯</button>
+
+    <!-- Flipbook Stage (Buku 3D) -->
+    <section class="flipbook-container" id="flipbookContainer" aria-label="Interactive Flipbook">
+      <div class="flipbook-book" id="flipbook">
+        <!-- Halaman-halaman dirender secara dinamis oleh app.js -->
+      </div>
+    </section>
+
+    <!-- Heyzine-Style Floating Bottom Toolbar -->
+    <nav class="flipbook-toolbar" id="flipbookToolbar" aria-label="Navigasi Buku">
+      <button class="toolbar-btn" id="prevBtn" title="Halaman Sebelumnya" aria-label="Halaman Sebelumnya">❮</button>
+      <div class="page-indicator-pill" id="pageIndicator">Sampul Depan</div>
+      <button class="toolbar-btn" id="nextBtn" title="Halaman Selanjutnya" aria-label="Halaman Selanjutnya">❯</button>
+      
+      <div class="toolbar-divider" aria-hidden="true"></div>
+      <button class="toolbar-btn zoom-btn" id="zoomBtn" title="Perbesar Halaman (Zoom)" aria-label="Zoom Halaman">🔍</button>
+      <button class="toolbar-btn fs-btn" id="fullscreenBtn" title="Layar Penuh" aria-label="Layar Penuh">⛶</button>
+      <button class="toolbar-btn music-btn" id="musicBtn" title="Putar/Jeda Musik Latar" aria-label="Musik Latar">🎵</button>
+    </nav>
+
+    <!-- Background Audio Element untuk Musik Otomatis -->
+    <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline>
+      <source src="assets/lagu/Memories.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Modal Detail Profil & Pesan Kru (Parchment Card) -->
+    <div class="quote-modal-overlay" id="quoteModal" aria-hidden="true" role="dialog" aria-labelledby="modalCrewName">
+      <div class="quote-modal-card">
+        <button class="quote-modal-close" id="quoteModalClose" aria-label="Tutup Pesan">✕</button>
+        <div class="quote-modal-header">
+          <div class="quote-modal-avatar-frame" id="modalCrewAvatarFrame">
+            <img class="quote-modal-avatar" id="modalCrewAvatar" src="" alt="Foto Kru">
+          </div>
+          <div class="quote-modal-meta">
+            <span class="quote-modal-role" id="modalCrewRole">LEADER</span>
+            <h3 class="quote-modal-name" id="modalCrewName">Nama Kru</h3>
+            <span class="quote-modal-division" id="modalCrewDivision">Divisi Kru</span>
+          </div>
+        </div>
+        
+        <!-- Judul Pita Modal Dinamis -->
+        <div class="quote-modal-divider" id="modalSectionTitle">⚓ PESAN UNTUK BATCH 18 ⚓</div>
+
+        <!-- Mode Standar (Pesan Lengkap Kru untuk Batch 18) -->
+        <div class="quote-modal-body" id="modalRegularBody">
+          <p class="quote-modal-fulltext" id="modalCrewQuote">Pesan...</p>
+        </div>
+
+        <!-- Mode Divisi: Quote Pribadi, Kesan Selama Magang, dan Pencapaian -->
+        <div class="division-modal-details" id="modalDivisionDetails" style="display: none;">
+          <div class="modal-detail-block">
+            <span class="modal-detail-label" id="modalLabelQuote">💬 Quote Pribadi:</span>
+            <p class="modal-detail-text" id="modalDetailQuote">“...”</p>
+          </div>
+          <div class="modal-detail-block">
+            <span class="modal-detail-label">🌊 Kesan Selama Magang:</span>
+            <p class="modal-detail-text" id="modalDetailMemorable">...</p>
+          </div>
+          <div class="modal-detail-block">
+            <span class="modal-detail-label">🏆 Pencapaian:</span>
+            <p class="modal-detail-text" id="modalDetailAchievement">...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Teater Layar Penuh Vertikal (Format Asli Reels 9:16 - Bebas Potongan & Tidak Miring) -->
+  <div class="reels-fullscreen-modal" id="reelsFullscreenModal" aria-hidden="true">
+    <div class="reels-modal-backdrop" id="reelsModalBackdrop"></div>
+    <div class="reels-modal-container">
+      <div class="reels-modal-header">
+        <div class="reels-modal-title-wrap">
+          <span class="reels-modal-title">THE JOURNEY OF NAWALA</span>
+          <span class="reels-modal-badge">Batch 18 • Mini Movie (9:16 Vertikal)</span>
+        </div>
+        <button type="button" class="reels-modal-close-btn" id="reelsModalCloseBtn" title="Tutup Layar Penuh (Esc)" aria-label="Tutup Layar Penuh">
+          <span class="close-icon">✕</span>
+          <span class="close-text">Tutup</span>
+        </button>
+      </div>
+
+      <div class="reels-modal-screen-wrap">
+        <iframe id="reelsModalVideoPlayer"
+                class="reels-modal-video"
+                src="https://drive.google.com/file/d/1yoKIdjPJpx2mez1cOnVXxgAO-j-ULtd1/preview"
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                style="border:0; width:100%; height:100%;"
+                title="The Journey of Nawala - Mini Movie">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/page-flip.browser.min.js"></script>
+  <script src="js/book-config.js?v=8.0"></script>
+  <script src="js/app.js?v=8.0"></script>
+</body>
+</html>

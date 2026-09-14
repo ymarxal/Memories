@@ -1,0 +1,12 @@
+# File video besar — tidak di-deploy ke Vercel (embed via Google Drive)
+assets/video/
+
+# Folder design reference lokal
+assets/referensi_desain/
+
+# Antigravity agents metadata lokal
+.agents/
+
+# OS files
+.DS_Store
+Thumbs.db

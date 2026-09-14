@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+.env*
+
+# File video besar (> 100MB tidak bisa di-push ke GitHub)
+assets/video/
+
+# Folder design reference lokal
+assets/referensi_desain/
+
+# Antigravity agents metadata lokal
+.agents/
+
+# Folder temp / cache lokal
+.temp_chrome_snaps/
+.temp_chrome_verify/
+.system_generated/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

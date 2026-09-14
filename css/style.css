@@ -1,0 +1,5281 @@
+/* ==========================================================================
+   LOGBOOK NAWALA - BATCH 18 RUMAH BUMN MAKASSAR
+   Theme: One Piece Pirate Logbook (Heyzine Flipbook Engine)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --font-display: 'Cinzel Decorative', 'Cinzel', serif;
+  --font-pirate: 'Pirata One', cursive;
+  --font-bebas: 'Bebas Neue', Impact, sans-serif;
+  --font-serif: 'IM Fell English', Georgia, serif;
+  --font-poster-name: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Palette Warna Antik Maritim & One Piece */
+  --parchment-base: #f7eed8;
+  --parchment-dark: #ecdab5;
+  --parchment-border: #c8ad7f;
+  --ink-primary: #271d15;
+  --ink-secondary: #5a4635;
+  --ink-muted: #7c6855;
+  --bounty-red: #8f1c1c;
+  --gold-primary: #d4af37;
+  --gold-glow: #ffd966;
+  --gold-dark: #8c6d1f;
+  --leather-dark: #1e120c;
+  --wood-desk: #140d09;
+
+  --shadow-book: 0 35px 80px -15px rgba(0, 0, 0, 0.9), 0 10px 30px rgba(0, 0, 0, 0.6);
+  --spine-shadow: inset 20px 0 30px -15px rgba(0, 0, 0, 0.35);
+  --page-border: 1px solid rgba(138, 107, 65, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--wood-desk);
+  font-family: var(--font-sans);
+  color: var(--ink-primary);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   DESK ENVIRONMENT (Samudera One Piece & Background Resmi)
+   ========================================================================== */
+.desk-viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: url('../assets/images/background%201.png') center center / cover no-repeat;
+  overflow: hidden;
+}
+
+/* Ambient Lighting Halus */
+.ambient-lighting {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 60%, rgba(5, 20, 35, 0.45) 100%);
+  z-index: 1;
+}
+
+/* Top App Header (Kotak Putih Elegan) */
+.top-nav-bar {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  backdrop-filter: blur(10px);
+  padding: 6px 24px 6px 14px;
+  border-radius: 30px;
+  border: 1.5px solid rgba(138, 107, 65, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  transition: opacity 0.3s ease;
+}
+
+.top-nav-bar .top-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
+}
+
+.top-nav-bar .title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.top-nav-bar .main-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #1e120c;
+  text-transform: uppercase;
+}
+
+.top-nav-bar .sub-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--bounty-red);
+  letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   FLIPBOOK STAGE & WRAPPER
+   ========================================================================== */
+.flipbook-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 85vh;
+  max-width: 1300px;
+  perspective: 2000px;
+}
+
+.flipbook-book {
+  position: relative;
+  box-shadow: var(--shadow-book);
+  border-radius: 4px;
+  background: transparent;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: grab;
+}
+
+.flipbook-book:active {
+  cursor: grabbing;
+}
+
+/* Clean Cover Mode: Hilangkan bayangan kotak wrapper 1200px dari container saat di cover */
+.flipbook-book.is-cover-mode {
+  box-shadow: none !important;
+}
+
+.flipbook-book.is-cover-mode.is-front-cover .page.front-cover {
+  box-shadow: 0 32px 80px -10px rgba(0, 0, 0, 0.95), 0 12px 32px rgba(0, 0, 0, 0.7) !important;
+  border-radius: 4px 10px 10px 4px;
+}
+
+.flipbook-book.is-cover-mode.is-back-cover .page.back-cover {
+  box-shadow: 0 32px 80px -10px rgba(0, 0, 0, 0.95), 0 12px 32px rgba(0, 0, 0, 0.7) !important;
+  border-radius: 10px 4px 4px 10px;
+}
+
+/* Initial Closed Book Centering Helper */
+.flipbook-book.cover-mode {
+  transform: scale(0.98);
+}
+
+/* Hint Klik Cover Awal */
+.cover-click-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(18, 11, 7, 0.9);
+  border: 1px solid var(--gold-primary);
+  color: #fff4d4;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  animation: pulseHint 2.4s infinite ease-in-out;
+  z-index: 20;
+}
+
+@keyframes pulseHint {
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 0.95;
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-6px);
+    opacity: 1;
+    box-shadow: 0 12px 25px rgba(212, 175, 55, 0.4);
+  }
+}
+
+/* ==========================================================================
+   PAGE STYLING (Setiap Halaman Memakai Background 1 s.d. 4 Secara Bergilir)
+   ========================================================================== */
+.page {
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+  container-name: flip-page;
+}
+
+/* Layer background per slide agar tidak tertimpa StPageFlip */
+.page-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Slide 1 & 2 Full Presentation Pages */
+.page.full-slide-page {
+  background: #000 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page.full-slide-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+/* Hardcover Sampul Depan: Pastikan sampul fix.png tampil 100% presisi */
+.page.front-cover {
+  background: #0c1826 !important;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.page.front-cover img.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+.page.back-cover {
+  background: radial-gradient(circle at center, rgba(30, 18, 12, 0.94) 0%, rgba(15, 8, 5, 0.98) 100%),
+    url('../assets/images/background%201.png') center center / cover no-repeat !important;
+  border-left: 2px solid rgba(212, 175, 55, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ecdab5;
+  text-align: center;
+  padding: 40px;
+}
+
+/* Center Spine Shadow */
+.page.--left {
+  border-right: 1px solid rgba(85, 57, 28, 0.5);
+}
+
+.page.--right {
+  border-left: 1px solid rgba(85, 57, 28, 0.5);
+}
+
+/* Page Frame Container di atas background.png */
+.page-inner {
+  height: 100%;
+  padding: 8px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Header Brand Selalu dengan LOGOKU.png */
+.page-header-brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  z-index: 20;
+}
+
+.page-logo-img {
+  height: 32px;
+  max-width: 160px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.page-flag-badge {
+  background: #111d2b;
+  color: #fff;
+  border: 1px solid var(--gold-primary);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Papan Kayu Judul — Untuk halaman kru, background putih */
+.wooden-board-header {
+  background: #ffffff;
+  border: 3px solid #4a2912;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.4), inset 0 -2px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  position: relative;
+  padding: 4px 22px;
+  text-align: center;
+  margin: 0 auto 6px;
+  display: table;
+  max-width: 85%;
+}
+
+.wooden-board-header::before,
+.wooden-board-header::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 5px;
+  height: 12px;
+  background: #cbb07a;
+  border: 1px solid #70552b;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.wooden-board-header::before {
+  left: 18px;
+}
+
+.wooden-board-header::after {
+  right: 18px;
+}
+
+.wooden-board-title {
+  font-family: var(--font-pirate);
+  font-size: 1.45rem;
+  color: #24140a;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.wooden-board-sub {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  color: #fff;
+  font-style: italic;
+  margin-top: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Kartu Gaya Slide 2 (Wooden Rope Frame & Parchment Center) */
+.slide2-card {
+  background: #fdf6e6;
+  border: 4px solid #734925;
+  outline: 2px solid #3b220f;
+  outline-offset: -2px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 0 25px rgba(184, 142, 92, 0.35);
+  border-radius: 6px;
+  padding: 14px 16px;
+  position: relative;
+}
+
+.slide2-card-star {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-primary);
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.page-border-frame {
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(164, 129, 82, 0.4);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.page-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gold-dark);
+  pointer-events: none;
+}
+
+.page-corner.top-left {
+  top: 12px;
+  left: 12px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.page-corner.top-right {
+  top: 12px;
+  right: 12px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.page-corner.bottom-left {
+  bottom: 12px;
+  left: 12px;
+  border-right: none;
+  border-top: none;
+}
+
+.page-corner.bottom-right {
+  bottom: 12px;
+  right: 12px;
+  border-left: none;
+  border-top: none;
+}
+
+.page-number {
+  position: absolute;
+  bottom: 8px;
+  right: 18px;
+  font-family: var(--font-serif);
+  font-size: 0.76rem;
+  color: #f7eed8;
+  background: rgba(18, 11, 7, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 2px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  z-index: 25;
+}
+
+/* ==========================================================================
+   HALAMAN 1: SAMBUTAN & PROLOG NAKHODA
+   ========================================================================== */
+.foreword-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grand-line-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--gold-dark);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.foreword-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--ink-primary);
+  line-height: 1.2;
+}
+
+.foreword-subtitle {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--bounty-red);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.foreword-quote-box {
+  background: rgba(212, 175, 55, 0.1);
+  border-left: 3px solid var(--bounty-red);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border-radius: 0 6px 6px 0;
+}
+
+.foreword-quote-box p {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-primary);
+  font-style: italic;
+}
+
+.foreword-body {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--ink-secondary);
+  text-align: justify;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.foreword-body p {
+  margin-bottom: 12px;
+  text-indent: 1.5em;
+}
+
+.foreword-signature {
+  margin-top: 14px;
+  text-align: right;
+}
+
+.signature-seal {
+  font-family: var(--font-pirate);
+  font-size: 1.4rem;
+  color: var(--bounty-red);
+  letter-spacing: 2px;
+  display: block;
+}
+
+.signature-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+/* ==========================================================================
+   HALAMAN 2: LOG POSE & DAFTAR ISI (TABLE OF CONTENTS)
+   ========================================================================== */
+.toc-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.log-pose-illustration {
+  text-align: center;
+  margin: 10px 0 16px;
+}
+
+.compass-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.25));
+  animation: rotateCompass 12s infinite linear;
+  display: inline-block;
+}
+
+@keyframes rotateCompass {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(18deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.toc-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(138, 107, 65, 0.08);
+  border: 1px solid rgba(138, 107, 65, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toc-item:hover {
+  background: rgba(212, 175, 55, 0.22);
+  transform: translateX(4px);
+  border-color: var(--gold-dark);
+}
+
+.toc-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toc-roman {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--bounty-red);
+  min-width: 24px;
+}
+
+.toc-name {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.toc-page {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+}
+
+/* ==========================================================================
+   HALAMAN 2: MAKNA & FILOSOFI NAWALA (EDITORIAL NAUTICAL CARD)
+   ========================================================================== */
+.page-manifesto {
+  position: relative;
+  overflow: hidden;
+  background-color: #0b1c2e;
+}
+
+.manifesto-container {
+  height: 100%;
+  width: 100%;
+  padding: 12px 18px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.manifesto-card {
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 26px;
+  box-shadow: 
+    0 20px 48px rgba(8, 20, 38, 0.3),
+    0 4px 14px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(212, 175, 55, 0.45);
+  padding: 12px 20px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brass Rivet Corners (Sudut Kuningan Maritim) */
+.manifesto-brass {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.manifesto-brass.brass-tl {
+  top: 8px;
+  left: 8px;
+  border-top: 2.5px solid #c89e47;
+  border-left: 2.5px solid #c89e47;
+  border-top-left-radius: 5px;
+}
+
+.manifesto-brass.brass-tr {
+  top: 8px;
+  right: 8px;
+  border-top: 2.5px solid #c89e47;
+  border-right: 2.5px solid #c89e47;
+  border-top-right-radius: 5px;
+}
+
+.manifesto-brass.brass-bl {
+  bottom: 8px;
+  left: 8px;
+  border-bottom: 2.5px solid #c89e47;
+  border-left: 2.5px solid #c89e47;
+  border-bottom-left-radius: 5px;
+}
+
+.manifesto-brass.brass-br {
+  bottom: 8px;
+  right: 8px;
+  border-bottom: 2.5px solid #c89e47;
+  border-right: 2.5px solid #c89e47;
+  border-bottom-right-radius: 5px;
+}
+
+/* Top Section: Logo & 4 Pillars */
+.manifesto-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+.manifesto-logo-box {
+  flex: 0 0 38%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.manifesto-logo-img {
+  width: 100%;
+  max-width: 155px;
+  max-height: 98px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.08));
+}
+
+.manifesto-pillars-col {
+  flex: 1 1 62%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+}
+
+.manifesto-pillar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.manifesto-pillar-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pillar-bullet-dot {
+  width: 6.5px;
+  height: 6.5px;
+  background: #781616;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.pillar-label {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  font-size: 0.83rem;
+  letter-spacing: 0.5px;
+  color: #781616;
+  text-transform: uppercase;
+}
+
+.pillar-desc-text {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.73rem;
+  font-weight: 500;
+  color: #2b1818;
+  line-height: 1.3;
+  margin: 0;
+  padding-left: 14px;
+}
+
+/* Divider Gradien Maritim Halus */
+.manifesto-divider-wrap {
+  position: relative;
+  margin: 5px 0 4px;
+  z-index: 2;
+}
+
+.manifesto-divider-line {
+  height: 1.5px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(206, 161, 62, 0.45) 20%,
+    rgba(13, 50, 92, 0.5) 50%,
+    rgba(206, 161, 62, 0.45) 80%,
+    transparent
+  );
+}
+
+/* Bottom Section: 2 Paragraf Narasi Editorial */
+.manifesto-narrative-section {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 2px;
+}
+
+.manifesto-paragraph {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.73rem;
+  color: #721616;
+  line-height: 1.38;
+  margin: 0;
+  text-align: left;
+  letter-spacing: 0.05px;
+}
+
+.manifesto-paragraph:first-child {
+  margin-bottom: 3px;
+}
+
+.manifesto-paragraph .hl-nawala {
+  color: #0b315b;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.manifesto-paragraph .hl-batch {
+  color: #ca8817;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   HALAMAN MANAGEMENT: PIMPINAN RUMAH BUMN (2 ORANG)
+   ========================================================================== */
+.page-inner-mgmt {
+  padding: 8px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.mgmt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  flex: 1;
+  align-items: stretch;
+  margin-top: 4px;
+  min-height: 0;
+}
+
+.mgmt-card {
+  background: #ffffff;
+  border: 3px solid #5c3a1e;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 16px rgba(212, 175, 55, 0.14);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mgmt-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), inset 0 0 20px rgba(212, 175, 55, 0.22);
+}
+
+.mgmt-photo-frame {
+  width: 180px;
+  height: 220px;
+  border: 3px solid #734925;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111d2b;
+  position: relative;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+
+.mgmt-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.mgmt-img.mgmt-img-fallback {
+  object-fit: contain;
+  padding: 12px;
+  background: #0d1e33;
+}
+
+.mgmt-badge-star {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #0d284e 0%, #06152b 100%);
+  color: #ffd700;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 3.5px 0;
+  text-align: center;
+  border-top: 1.5px solid rgba(212, 175, 55, 0.6);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.mgmt-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 4px;
+}
+
+.mgmt-name {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #1a0f07;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mgmt-role-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: rgba(139, 24, 24, 0.08);
+  border: 1px solid rgba(139, 24, 24, 0.28);
+  border-radius: 12px;
+  padding: 4px 14px;
+  max-width: 90%;
+}
+
+.mgmt-title {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #8b1818;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mgmt-period {
+  font-family: var(--font-sans);
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #63391b;
+  letter-spacing: 0.4px;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.mgmt-empty-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #223752 0%, #0d1e33 100%);
+  color: #d4af37;
+  gap: 8px;
+}
+
+.mgmt-empty-icon {
+  font-size: 2.2rem;
+  opacity: 0.55;
+}
+
+.mgmt-empty-text {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 0.85);
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   9 HALAMAN DIVISI: SQUADRON SHOWCASE & ACHIEVEMENTS
+   ========================================================================== */
+.page-inner-division {
+  padding: 8px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.division-top-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.division-title-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(180deg, #2b180d 0%, #150b06 100%);
+  border: 2px solid #d4af37;
+  border-radius: 24px;
+  padding: 4px 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 215, 0, 0.4);
+}
+
+.division-main-title {
+  font-family: var(--font-bebas), var(--font-pirate);
+  font-size: 1.45rem;
+  background: linear-gradient(180deg, #fff4cc 0%, #f7d463 35%, #d4a024 70%, #94650c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  letter-spacing: 2.8px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.title-anchor {
+  color: #ffd700;
+  font-size: 1.05rem;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
+  display: inline-block;
+}
+
+.division-member-count {
+  font-family: var(--font-sans);
+  font-size: 0.70rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(18, 11, 7, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 1px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.division-body-card {
+  background: #ffffff;
+  border: 3px solid #5c3a1e;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  padding: 8px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.division-photo-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.division-photo-frame {
+  width: 220px;
+  height: 125px;
+  border-radius: 8px;
+  border: 2.5px solid #734925;
+  overflow: hidden;
+  position: relative;
+  background: #111d2b;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.division-team-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Kalibrasi Framing Vertikal Foto Divisi: Semua Wajah & Kepala Utuh Tanpa Terpotong */
+.division-team-img.div-photo-front_office {
+  object-position: center 72% !important;
+}
+
+.division-team-img.div-photo-creative_design {
+  object-position: center 45% !important;
+}
+
+.division-team-img.div-photo-program_development {
+  object-position: center 50% !important;
+}
+
+.division-team-img.div-photo-sosial_media_strategist {
+  object-position: center 60% !important;
+}
+
+.division-team-img.div-photo-content_producer {
+  object-position: center 52% !important;
+}
+
+.division-team-img.div-photo-legal_partnership,
+.division-team-img.div-photo-legal_and_partnership {
+  object-position: center 48% !important;
+}
+
+.division-team-img.div-photo-sme_relations {
+  object-position: center 63% !important;
+}
+
+.division-team-img.div-photo-digital_marketing {
+  object-position: center 65% !important;
+}
+
+.division-team-img.div-photo-event_community_management {
+  object-position: center 53% !important;
+}
+
+.division-team-img.division-img-fallback {
+  object-fit: contain;
+  padding: 10px;
+  background: #0e1e30;
+}
+
+.division-desc-box {
+  flex: 1;
+  min-width: 0;
+  background: rgba(247, 238, 216, 0.55);
+  border: 1.5px solid rgba(138, 107, 65, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.desc-heading {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #8b1818;
+  letter-spacing: 0.4px;
+  margin: 0 0 2px 0;
+  text-transform: uppercase;
+}
+
+.desc-text {
+  font-family: var(--font-sans);
+  font-size: 0.69rem;
+  color: #2b1818;
+  line-height: 1.34;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.division-achievements-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.achieve-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-top: 1.5px dashed rgba(115, 73, 37, 0.35);
+  border-bottom: 1.5px dashed rgba(115, 73, 37, 0.35);
+  padding: 3px 0;
+  margin-bottom: 5px;
+}
+
+.achieve-heading {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #0d284e;
+}
+
+.achieve-star {
+  color: #c48b17;
+  font-size: 0.72rem;
+}
+
+.achieve-grid-items {
+  display: grid;
+  gap: 5px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.achieve-grid-regular {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.achieve-grid-dense {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.achieve-item-card {
+  background: rgba(247, 238, 216, 0.45);
+  border: 1px solid rgba(138, 107, 65, 0.25);
+  border-left: 2.5px solid #0d284e;
+  border-radius: 4px;
+  padding: 3px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.achieve-person-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.15;
+}
+
+.achieve-bullet {
+  color: #8b1818;
+  font-size: 0.5rem;
+}
+
+.achieve-name {
+  font-family: var(--font-serif);
+  font-size: 0.73rem;
+  color: #1a0f07;
+}
+
+.achieve-role-tag {
+  font-family: var(--font-sans);
+  font-size: 0.60rem;
+  color: #70552b;
+  font-style: italic;
+  margin-left: auto;
+}
+
+.achieve-highlight {
+  font-family: var(--font-sans);
+  font-size: 0.67rem;
+  color: #2b1c12;
+  line-height: 1.22;
+  margin: 1px 0 0 8px;
+}
+
+/* ==========================================================================
+   HALAMAN MINI-MOVIE THEATER DENGAN AMBIENT CINEMA DIMMING
+   ========================================================================== */
+.page-inner-movie {
+  padding: 10px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.cinema-theater-box {
+  background: #ffffff;
+  border: 3.5px solid #5c3a1e;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  padding: 12px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.cinema-screen-wrap {
+  width: 100%;
+  height: 220px;
+  background: #000;
+  border-radius: 8px;
+  border: 2px solid #8b6c38;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.cinema-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cinema-meta-card {
+  margin-top: 8px;
+  background: rgba(247, 238, 216, 0.45);
+  border: 1px solid rgba(138, 107, 65, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.cinema-meta-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cinema-pill {
+  font-family: var(--font-display);
+  font-size: 0.70rem;
+  font-weight: 800;
+  color: #ffd875;
+  background: #0d284e;
+  padding: 2px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--gold-primary);
+}
+
+.cinema-hint {
+  font-family: var(--font-sans);
+  font-size: 0.67rem;
+  color: #70552b;
+  font-style: italic;
+}
+
+.cinema-synopsis {
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  color: #24140b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Efek Cinema Dimming Ketika Video Diputar */
+#deskViewport.cinema-dimmed .ambient-lighting {
+  opacity: 0.05 !important;
+}
+
+#deskViewport.cinema-dimmed .top-nav-bar,
+#deskViewport.cinema-dimmed .flipbook-toolbar,
+#deskViewport.cinema-dimmed .side-arrow {
+  opacity: 0.15 !important;
+  transition: opacity 0.5s ease;
+}
+
+#deskViewport.cinema-dimmed .top-nav-bar:hover,
+#deskViewport.cinema-dimmed .flipbook-toolbar:hover,
+#deskViewport.cinema-dimmed .side-arrow:hover {
+  opacity: 1 !important;
+}
+
+/* ==========================================================================
+   SLIDE WANTED POSTERS 35 KRU (SESUAI TEMPLATE SLIDE 1 & 2)
+   ========================================================================== */
+.bounty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+  padding: 2px 0 4px;
+}
+
+/* Layout Khusus 2 Leader Batch di Halaman Depan */
+.page-inner-leaders {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 6px 14px 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bounty-grid-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  margin-top: 2px;
+}
+
+.wanted-poster {
+  background: #d4b581;
+  border: 3px solid #382619;
+  box-shadow: inset 0 0 25px rgba(139, 90, 43, 0.4), 0 4px 10px rgba(0, 0, 0, 0.25);
+  padding: 6px 5px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  height: 100%;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  gap: 2px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Khusus Kartu 2 Leader Batch: Layout Presisi, Foto Besar & Gagah */
+.wanted-poster.wanted-poster-leader {
+  width: 225px;
+  max-width: 235px;
+  height: 100%;
+  max-height: 100%;
+  padding: 6px 6px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  box-shadow: inset 0 0 30px rgba(139, 90, 43, 0.45), 0 6px 16px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.wanted-poster-leader .wanted-header {
+  font-size: 1.15rem;
+  margin-top: 1px;
+  margin-bottom: 2px;
+  line-height: 1;
+  transform: scaleY(1.05);
+}
+
+.wanted-poster-leader .wanted-photo-slot {
+  width: calc(100% - 6px);
+  height: 180px;
+  min-height: 170px;
+  max-height: 190px;
+  margin: 1px 0 2px;
+  border: 2px solid #382619;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wanted-poster-leader .wanted-photo-slot img.kru-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.wanted-poster-leader .wanted-doa-banner {
+  margin: 2px 0 1px;
+  padding: 1px 0;
+}
+
+.wanted-poster-leader .wanted-name-box {
+  height: 26px;
+  min-height: 26px;
+  max-height: 26px;
+  margin: 1px 0;
+}
+
+.wanted-poster-leader .wanted-name {
+  font-size: 0.88rem;
+  line-height: 1.15;
+}
+
+.wanted-poster-leader .leader-details-wrap {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 1px;
+  gap: 2px;
+}
+
+.wanted-role-badge.role-leader-batch {
+  background: linear-gradient(135deg, #a11c1c 0%, #761111 100%);
+  color: #fff;
+  border: 1.5px solid var(--gold-primary);
+  font-family: var(--font-bebas);
+  font-size: 0.72rem;
+  letter-spacing: 1.1px;
+  padding: 1px 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0 0 1px;
+  line-height: 1.2;
+}
+
+.wanted-division.leader-division {
+  font-family: var(--font-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #3e2717;
+  letter-spacing: 0.2px;
+  margin-bottom: 1px;
+  border-bottom: 1px dashed rgba(115, 73, 37, 0.45);
+  padding-bottom: 1px;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wanted-quote-box.leader-quote-box {
+  font-family: var(--font-serif);
+  width: 100%;
+  flex: 0 0 auto;
+  min-height: 40px;
+  max-height: 52px;
+  overflow: hidden;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(139, 90, 43, 0.35);
+  border-left: 3px solid #8b1818;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.wanted-quote-box.leader-quote-box::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.wanted-quote-box.leader-quote-box:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.wanted-quote-text.leader-quote-text {
+  font-family: 'Playfair Display', Georgia, 'IM Fell English', serif;
+  font-size: 0.79rem;
+  font-style: italic;
+  font-weight: 700;
+  color: #1a0a04;
+  line-height: 1.34;
+  text-align: center;
+  letter-spacing: 0.12px;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+/* Garis ganda di dalam frame */
+.wanted-poster::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  border: 1px solid #382619;
+  pointer-events: none;
+}
+
+.wanted-poster:hover {
+  transform: translateY(-2px);
+  border-color: #8b1818;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(212, 175, 55, 0.35);
+}
+
+.wanted-poster:hover .wanted-photo-slot {
+  border-color: #8b1818;
+}
+
+.wanted-poster:hover .wanted-quote-box {
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Header INTERNSHIP bergaya font poster One Piece otentik */
+.wanted-header {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.10rem;
+  font-weight: 900;
+  color: #24140a;
+  letter-spacing: 1.4px;
+  line-height: 1;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  transform: scaleY(1.05);
+}
+
+/* Slot Foto Kru: Proporsi Dominan & Megah sesuai Poster Buronan One Piece Asli */
+.wanted-photo-slot {
+  width: calc(100% - 6px);
+  height: 160px;
+  min-height: 150px;
+  max-height: 170px;
+  border: 1.5px solid #382619;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1px;
+  margin-bottom: 2px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.wanted-photo-slot img.kru-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.wanted-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #3b2416;
+  background: #fcfbf8;
+  border: 1px dashed rgba(84, 54, 30, 0.35);
+  box-sizing: border-box;
+}
+
+.wanted-avatar-placeholder .kru-id-badge {
+  font-family: var(--font-bebas);
+  font-size: 1.8rem;
+  color: #8b1818;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.wanted-avatar-placeholder .kru-file-name {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #5c3c23;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* Banner unik BATCH 18 pengganti DEAD OR ALIVE */
+.wanted-doa-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 90%;
+  margin: 1px 0;
+  padding: 1px 0;
+  border-top: 1px solid #4a2d18;
+  border-bottom: 1px solid #4a2d18;
+}
+
+.wanted-doa-banner .doa-star {
+  font-size: 0.55rem;
+  color: #8b1818;
+  line-height: 1;
+}
+
+.wanted-doa-banner .doa-text {
+  font-family: var(--font-bebas);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #8b1818;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Box Nama dengan tinggi konsisten & tipografi tegas */
+.wanted-name-box {
+  height: 25px;
+  min-height: 25px;
+  max-height: 25px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 1px 0;
+}
+
+.wanted-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #24140a;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  width: 96%;
+  text-align: center;
+  text-transform: uppercase;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+/* Bagian detail bawah terhubung rapat tanpa celah kosong di tengah */
+.wanted-details-wrap {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 1px;
+  gap: 2px;
+}
+
+/* Badge Peran (LEADER vs TEAM MEMBER) */
+.wanted-role-badge {
+  display: inline-block;
+  font-family: var(--font-bebas);
+  font-size: 0.60rem;
+  letter-spacing: 1px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  margin: 0 0 1px;
+  line-height: 1.2;
+}
+
+.wanted-role-badge.role-leader {
+  background: #8b1818;
+  color: #fff;
+  border: 1.5px solid var(--gold-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.wanted-role-badge.role-team {
+  background: #1e3347;
+  color: #eeddbb;
+  border: 1.5px solid #6b8fae;
+}
+
+/* Divisi Penempatan */
+.wanted-division {
+  font-family: var(--font-serif);
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #533b2a;
+  letter-spacing: 0.2px;
+  margin-bottom: 1px;
+  border-bottom: 1px dashed rgba(115, 73, 37, 0.4);
+  padding-bottom: 1px;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Quotes Personal Kru (Kesan & Pesan Terbaca Jelas & Kontras) */
+.wanted-quote-box {
+  width: 96%;
+  flex: 0 0 auto;
+  min-height: 38px;
+  max-height: 52px;
+  overflow: hidden;
+  padding: 3px 6px;
+  background: #ffffff;
+  border: 1px solid rgba(85, 50, 25, 0.35);
+  border-left: 3px solid #8b1818;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 2px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wanted-quote-box::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.wanted-quote-box:hover {
+  background: #fdfaf3;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.wanted-quote-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.68rem;
+  font-style: italic;
+  font-weight: 700;
+  color: #1a0a04;
+  line-height: 1.25;
+  text-align: center;
+  letter-spacing: 0.1px;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+/* ==========================================================================
+   MODAL DETAIL PESAN & KESAN (PARCHMENT CARD POPUP)
+   ========================================================================== */
+.quote-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(12, 7, 4, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  padding: 20px;
+}
+
+.quote-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.quote-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: #f7eed8;
+  border: 4px solid #3c2415;
+  border-radius: 8px;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85), inset 0 0 40px rgba(139, 90, 43, 0.35);
+  padding: 26px 24px 22px;
+  text-align: center;
+  transform: scale(0.92);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.quote-modal-overlay.active .quote-modal-card {
+  transform: scale(1);
+}
+
+.quote-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #8b1818;
+  color: #ffffff;
+  border: 1.5px solid var(--gold-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.quote-modal-close:hover {
+  background: #b32424;
+  transform: scale(1.1);
+}
+
+.quote-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.quote-modal-avatar-frame {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2.5px solid #8b1818;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.quote-modal-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background: #ffffff;
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+
+/* Khusus Leader Batch: Perbesar sedikit dan geser ke bawah agar pas di bulatan */
+.quote-modal-avatar.avatar-leader-batch,
+.quote-modal-avatar-frame.is-leader-batch .quote-modal-avatar {
+  transform: scale(1.22) translateY(5%);
+}
+
+/* Khusus Nauval (kru 2) di modal: turunkan posisi fotonya agar pas dan tidak melewati batas atas frame */
+.quote-modal-avatar[data-crew-id="2"],
+.quote-modal-avatar[src*="kru2.png"] {
+  object-position: center 22% !important;
+  transform: scale(1.08) translateY(6%) !important;
+}
+
+/* Navigasi dikunci saat video sedang diputar */
+.nav-video-locked {
+  pointer-events: none !important;
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.8) !important;
+}
+
+.quote-modal-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-modal-role {
+  font-family: var(--font-bebas);
+  font-size: 0.88rem;
+  letter-spacing: 1.2px;
+  color: #8b1818;
+  text-transform: uppercase;
+}
+
+.quote-modal-name {
+  font-family: var(--font-poster-name);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #271408;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.quote-modal-division {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #5c3c23;
+}
+
+.quote-modal-divider {
+  font-family: var(--font-bebas);
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  color: #8b1818;
+  border-top: 1px dashed rgba(115, 73, 37, 0.4);
+  border-bottom: 1px dashed rgba(115, 73, 37, 0.4);
+  padding: 6px 0;
+  margin: 10px 0 14px;
+}
+
+.quote-modal-body {
+  position: relative;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 6px;
+  border-left: 4px solid var(--gold-dark);
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: inset 0 0 10px rgba(139, 90, 43, 0.1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 90, 43, 0.4) transparent;
+}
+
+.quote-modal-fulltext {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: #201107;
+  line-height: 1.55;
+  text-align: center;
+}
+
+/* Styling Detail Modal Khusus Anggota Divisi */
+.division-modal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 290px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 90, 43, 0.4) transparent;
+}
+
+.modal-detail-block {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(138, 107, 65, 0.3);
+  border-left: 3.5px solid #0d284e;
+  border-radius: 6px;
+  padding: 8px 12px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.modal-detail-label {
+  font-family: var(--font-sans);
+  font-size: 0.80rem;
+  font-weight: 800;
+  color: #8b1818;
+  letter-spacing: 0.3px;
+  display: block;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.modal-detail-text {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: #26160c;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Avatar Bulat Kru di Halaman Divisi */
+.division-crew-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2px;
+  min-height: 0;
+}
+
+.division-crew-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-top: 1px dashed rgba(115, 73, 37, 0.35);
+  border-bottom: 1px dashed rgba(115, 73, 37, 0.35);
+  padding: 2px 0;
+  margin-bottom: 3px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.division-crew-heading {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #0d284e;
+  text-transform: uppercase;
+}
+
+.division-crew-avatars-grid {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.division-crew-avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.division-crew-avatar-btn:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+
+.avatar-round-slot {
+  border-radius: 50%;
+  border: 3px solid #0d284e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.division-crew-avatar-btn:hover .avatar-round-slot {
+  border-color: #8b1818;
+  box-shadow: 0 6px 16px rgba(139, 24, 24, 0.5);
+}
+
+.avatar-round-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* Badge Indikator Interaktif KLIK pada Avatar Divisi */
+.division-avatar-click-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 40, 78, 0.92);
+  color: #ffd700;
+  font-family: var(--font-sans);
+  font-size: 0.50rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 1.5px 0;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(212, 175, 55, 0.55);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 2;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.division-crew-avatar-btn:hover .division-avatar-click-badge {
+  background: rgba(139, 24, 24, 0.96);
+  color: #ffffff;
+  border-top-color: #ffd700;
+}
+
+/* Kalibrasi khusus Nauval (id: 2) di bulatan halaman divisi: posisi kepala utuh tidak terpotong */
+.division-crew-avatar-btn[data-division-crew-id="2"] .avatar-round-img {
+  object-position: center 12% !important;
+  transform: scale(1.0) !important;
+}
+
+.avatar-round-caption {
+  font-family: var(--font-serif);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #1a0f07;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.avatar-round-role {
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  color: #8b1818;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Kalibrasi Presisi Layout & Skala Profil Bulat: Jauh Lebih Besar, Mengisi Ruang Proporsional */
+/* 2 Orang (Front Office, Program Development): Avatar 96px Megah */
+.crew-count-2 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 48px;
+}
+.crew-count-2 .division-crew-avatar-btn {
+  flex: 0 0 115px;
+}
+.crew-count-2 .avatar-round-slot {
+  width: 96px;
+  height: 96px;
+}
+.crew-count-2 .avatar-round-caption {
+  font-size: 0.88rem;
+}
+.crew-count-2 .avatar-round-role {
+  font-size: 0.64rem;
+}
+.crew-count-2 .division-avatar-click-badge {
+  font-size: 0.58rem;
+  padding: 2px 0;
+  letter-spacing: 0.8px;
+}
+
+/* 3 Orang (Creative Design, SMS, Legal): Avatar 88px Proporsional */
+.crew-count-3 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 28px;
+}
+.crew-count-3 .division-crew-avatar-btn {
+  flex: 0 0 105px;
+}
+.crew-count-3 .avatar-round-slot {
+  width: 88px;
+  height: 88px;
+}
+.crew-count-3 .avatar-round-caption {
+  font-size: 0.84rem;
+}
+.crew-count-3 .avatar-round-role {
+  font-size: 0.60rem;
+}
+.crew-count-3 .division-avatar-click-badge {
+  font-size: 0.54rem;
+  padding: 1.8px 0;
+  letter-spacing: 0.6px;
+}
+
+/* 4 Orang (Content Producer): Avatar 78px */
+.crew-count-4 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 16px;
+}
+.crew-count-4 .division-crew-avatar-btn {
+  flex: 0 0 92px;
+}
+.crew-count-4 .avatar-round-slot {
+  width: 78px;
+  height: 78px;
+}
+.crew-count-4 .avatar-round-caption {
+  font-size: 0.78rem;
+}
+.crew-count-4 .avatar-round-role {
+  font-size: 0.56rem;
+}
+.crew-count-4 .division-avatar-click-badge {
+  font-size: 0.50rem;
+  padding: 1.2px 0;
+}
+
+/* 6 Orang (SME Relations, Digital Marketing, ECM): Grid 3x2, Avatar 58px Pas & Utuh Tanpa Terpotong */
+.crew-count-6 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 20px;
+  justify-items: center;
+  align-content: center;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.crew-count-6 .division-crew-avatar-btn {
+  width: 80px;
+  gap: 1.5px;
+}
+.crew-count-6 .avatar-round-slot {
+  width: 58px;
+  height: 58px;
+  border-width: 2.5px;
+}
+.crew-count-6 .avatar-round-caption {
+  font-size: 0.72rem;
+  line-height: 1.12;
+}
+.crew-count-6 .avatar-round-role {
+  font-size: 0.50rem;
+}
+.crew-count-6 .division-avatar-click-badge {
+  font-size: 0.44rem;
+  padding: 0.6px 0;
+  letter-spacing: 0.4px;
+}
+
+
+/* ==========================================================================
+   HALAMAN 5: LOG EKSPEDISI & PROGRAM KERJA
+   ========================================================================== */
+.expedition-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.expedition-card {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(138, 107, 65, 0.3);
+  border-left: 4px solid var(--gold-dark);
+  padding: 12px 14px;
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.expedition-card .card-milestone {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--bounty-red);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.expedition-card .card-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 4px;
+}
+
+.expedition-card .card-desc {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ink-secondary);
+}
+
+/* ==========================================================================
+   HALAMAN 6: POLAROID MEMORIES (GALERI KENANGAN)
+   ========================================================================== */
+.memories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.polaroid-frame {
+  background: #fffdf7;
+  padding: 8px 8px 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border: 1px solid #d8caa7;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.polaroid-frame:nth-child(1) {
+  transform: rotate(-2deg);
+}
+
+.polaroid-frame:nth-child(2) {
+  transform: rotate(3deg);
+}
+
+.polaroid-frame:nth-child(3) {
+  transform: rotate(2deg);
+}
+
+.polaroid-frame:nth-child(4) {
+  transform: rotate(-3deg);
+}
+
+.polaroid-frame:hover {
+  transform: scale(1.04) rotate(0deg);
+  z-index: 10;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.polaroid-tape {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 14px;
+  background: rgba(212, 175, 55, 0.45);
+  backdrop-filter: blur(2px);
+  border: 1px dashed rgba(138, 107, 65, 0.3);
+}
+
+.polaroid-img-box {
+  width: 100%;
+  height: 85px;
+  background: #382c23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #f7e6c4;
+  overflow: hidden;
+}
+
+.polaroid-caption {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.polaroid-title {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.polaroid-note {
+  font-size: 0.68rem;
+  color: var(--ink-secondary);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   HALAMAN SISIPAN PENGGUNA (CUSTOM USER PAGES: JPG/PNG/PDF)
+   ========================================================================== */
+.custom-page-slot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.slot-icon {
+  font-size: 3rem;
+  color: var(--gold-dark);
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+}
+
+.slot-heading {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 8px;
+}
+
+.slot-instruction {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+  max-width: 85%;
+  margin-bottom: 14px;
+}
+
+.slot-code-badge {
+  background: rgba(43, 29, 21, 0.08);
+  border: 1px dashed var(--gold-dark);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: var(--bounty-red);
+}
+
+/* User Loaded Image inside custom page */
+.user-injected-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   COVER BELAKANG (HARDCOVER BELAKANG)
+   ========================================================================== */
+.back-cover-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  gap: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.back-cover-logo-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-cover-logo-img {
+  width: 240px;
+  max-width: 84%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(212, 175, 55, 0.35));
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.back-cover-logo-img:hover {
+  transform: scale(1.05);
+}
+
+.back-cover-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.back-cover-main-title {
+  font-family: var(--font-display, 'Pirata One', cursive);
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #ffd700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.15;
+  text-shadow: 
+    0 3px 10px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(212, 175, 55, 0.5);
+}
+
+.back-cover-institution-title {
+  font-family: var(--font-serif, 'Cinzel', serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f5eedb;
+  letter-spacing: 2.8px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================================================
+   HEYZINE-STYLE FLOATING BOTTOM TOOLBAR
+   ========================================================================== */
+.flipbook-toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(18, 11, 7, 0.88);
+  backdrop-filter: blur(12px);
+  padding: 6px 16px;
+  border-radius: 30px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.toolbar-btn {
+  background: transparent;
+  border: none;
+  color: #ecdab5;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.25);
+  color: var(--gold-glow);
+  transform: translateY(-2px);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(212, 175, 55, 0.25);
+  margin: 0 4px;
+}
+
+.page-indicator-pill {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-primary);
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  min-width: 90px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   SIDE NAV ARROWS (Tombol Panah Layar Kiri & Kanan)
+   ========================================================================== */
+.side-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  /* Selalu di atas kanvas buku dan elemen lainnya */
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(18, 11, 7, 0.92);
+  border: 2px solid var(--gold-primary);
+  color: var(--gold-glow);
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 15px rgba(212, 175, 55, 0.3);
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+}
+
+.side-arrow:hover {
+  background: rgba(212, 175, 55, 0.4);
+  color: #fff;
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
+}
+
+.side-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.side-arrow.prev {
+  left: 24px;
+}
+
+.side-arrow.next {
+  right: 24px;
+}
+
+
+
+/* ==========================================================================
+   GRAND MARITIME CREST FOR CREW ROSTER (Pengganti Papan Kayu Repetitif)
+   ========================================================================== */
+.crew-grand-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, rgba(8, 20, 38, 0.96) 0%, rgba(18, 38, 68, 0.96) 50%, rgba(8, 20, 38, 0.96) 100%) !important;
+  border: 1.5px solid #d4a853 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 235, 175, 0.5), inset 0 0 10px rgba(212, 168, 83, 0.2) !important;
+  padding: 4px 18px !important;
+  margin: 0 auto 8px !important;
+  max-width: 90% !important;
+  width: fit-content !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.crew-grand-header .crew-header-star {
+  color: #ffd875 !important;
+  font-size: 0.75rem !important;
+  line-height: 1 !important;
+}
+
+.crew-grand-header .crew-header-anchor {
+  color: #ffdf88 !important;
+  font-size: 0.85rem !important;
+  line-height: 1 !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+}
+
+.crew-grand-header .crew-header-text {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  color: #ffea9f !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7) !important;
+  margin: 0 !important;
+  text-transform: uppercase !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATIONS (Desktop, Tablet, & HP - Heyzine Flipbook Experience)
+   ========================================================================== */
+
+/* Zoom Mode (Heyzine Signature Interactive Zoom) */
+.flipbook-container.is-zoomed {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  cursor: grab !important;
+  touch-action: pan-x pan-y !important;
+}
+
+.flipbook-container.is-zoomed:active {
+  cursor: grabbing !important;
+}
+
+.flipbook-container.is-zoomed .flipbook-book {
+  transform: scale(1.52) !important;
+  transform-origin: center center !important;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+
+/* ==========================================================================
+   HALAMAN SPESIAL PENGHARGAAN: INTERN OF THE MONTH (1 HALAMAN 1 BULAN)
+   ========================================================================== */
+.page-inner-iotm {
+  padding: 10px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.iotm-board-header {
+  margin-bottom: 8px;
+  padding: 3px 18px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.iotm-month-ribbon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #0d284e 0%, #06152b 100%);
+  color: #ffd700;
+  padding: 2px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.65);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.iotm-month-body-single {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  justify-content: space-between;
+}
+
+.iotm-card-single {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(138, 107, 65, 0.35);
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: calc(50% - 4px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.iotm-card-single:hover {
+  transform: translateY(-2px);
+  border-color: #8b1818;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(212, 175, 55, 0.4);
+}
+
+.iotm-card-single:hover .iotm-avatar-slot {
+  border-color: #8b1818;
+  box-shadow: 0 6px 16px rgba(139, 24, 24, 0.45);
+}
+
+.iotm-card-single:hover .iotm-click-badge {
+  background: rgba(139, 24, 24, 0.96);
+  color: #ffffff;
+}
+
+.iotm-card-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.iotm-avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.iotm-avatar-btn:hover {
+  transform: scale(1.08);
+}
+
+.iotm-avatar-slot {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2.5px solid #0d284e;
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.iotm-avatar-btn:hover .iotm-avatar-slot {
+  border-color: #8b1818;
+  box-shadow: 0 6px 16px rgba(139, 24, 24, 0.45);
+}
+
+.iotm-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* Kalibrasi Khusus Qhaira di IOTM: turunkan sedikit agar tidak melewati batas fotonya */
+.iotm-avatar-img[src*="kru1"],
+.iotm-avatar-img[alt*="Qhaira"] {
+  object-position: center 24% !important;
+}
+
+.iotm-click-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 40, 78, 0.90);
+  color: #ffd700;
+  font-family: var(--font-sans);
+  font-size: 0.50rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 1.5px 0;
+  letter-spacing: 0.5px;
+  border-top: 1px solid rgba(212, 175, 55, 0.5);
+}
+
+.iotm-click-tip {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #8b1818;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.iotm-card-content-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.iotm-person-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.iotm-person-name {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1a0f07;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.iotm-person-division {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #8b1818;
+  background: rgba(139, 24, 24, 0.08);
+  border: 1px solid rgba(139, 24, 24, 0.25);
+  border-radius: 6px;
+  padding: 1.5px 6px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.iotm-quote-card {
+  background: rgba(247, 238, 216, 0.65);
+  border: 1px solid rgba(138, 107, 65, 0.25);
+  border-left: 3.5px solid #0d284e;
+  border-radius: 6px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.iotm-quote-label {
+  font-family: var(--font-sans);
+  font-size: 0.60rem;
+  font-weight: 800;
+  color: #0d284e;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.iotm-quote-text {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #26160c;
+  line-height: 1.25;
+  margin: 0;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iotm-message-text {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: #4a2810;
+  line-height: 1.25;
+  margin: 0;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   HALAMAN MINI-MOVIE NAWALA: TEATER REELS / STORY VERTIKAL (9:16)
+   ========================================================================== */
+.page-inner-movie {
+  padding: 6px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.movie-board-header {
+  margin-top: 0;
+  margin-bottom: 2px;
+  padding: 3px 18px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.movie-board-header .wooden-board-title {
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  line-height: 1.1;
+}
+
+.reels-theater-layout.centered-movie-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+}
+
+.reels-stage-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px; /* Jarak aman lega tanpa menempel dengan header */
+}
+
+/* Smartphone / Reels 9:16 Mockup Frame di Tengah Halaman (Presisi Membungkus Layar Tanpa Meluber & Diperbesar Maksimal) */
+.reels-phone-mockup {
+  width: fit-content;
+  max-width: 95%;
+  background: #080f1a;
+  border-radius: 24px;
+  border: 3px solid #734925;
+  box-shadow: 
+    0 10px 28px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1.5px rgba(212, 175, 55, 0.45);
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 4px 5px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  overflow: hidden; /* Mencegah layar bocor ke luar frame */
+}
+
+.phone-speaker-notch {
+  width: 36px;
+  height: 3px;
+  background: #1a293d;
+  border-radius: 3px;
+  margin: 1px 0 4px;
+  flex-shrink: 0;
+}
+
+.phone-screen {
+  width: 194px;
+  height: 345px;
+  aspect-ratio: 9 / 16;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000000;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reels-video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover; /* Pas presisi 1:1 ke rasio 9:16 tanpa celah hitam dan tanpa pemotongan */
+  display: block;
+  background: #000000;
+}
+
+/* Play Overlay State & Golden Button */
+.phone-play-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.55) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  z-index: 15;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  user-select: none;
+}
+
+.phone-screen.is-playing .phone-play-overlay {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.phone-play-btn-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8010 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 18px rgba(0, 0, 0, 0.6),
+    0 0 0 3px rgba(255, 255, 255, 0.35),
+    0 0 20px rgba(212, 175, 55, 0.5);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.phone-play-btn-circle svg {
+  margin-left: 4px;
+}
+
+.phone-play-overlay:hover .phone-play-btn-circle {
+  transform: scale(1.12);
+  box-shadow: 
+    0 6px 24px rgba(0, 0, 0, 0.75),
+    0 0 0 4px rgba(255, 255, 255, 0.5),
+    0 0 28px rgba(212, 175, 55, 0.8);
+}
+
+.phone-play-label {
+  font-family: var(--font-display, 'Pirata One', cursive);
+  font-size: 0.82rem;
+  letter-spacing: 1.2px;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  background: rgba(13, 40, 78, 0.85);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.6);
+}
+
+.phone-home-indicator {
+  width: 40px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+  margin-top: 3px;
+  margin-bottom: 1px;
+  flex-shrink: 0;
+}
+
+/* Tombol Layar Penuh di Samping Kanan HP (Compact & Ergonomis) */
+.reels-side-actions {
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.reels-side-fs-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #8b1818 0%, #5a0e0e 100%);
+  color: #ffffff;
+  border: 1.5px solid #d4af37;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s ease;
+  user-select: none;
+  min-width: 66px;
+}
+
+.reels-side-fs-btn:hover {
+  background: linear-gradient(135deg, #a61e1e 0%, #721212 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  border-color: #ffd700;
+}
+
+.reels-side-fs-btn .fs-icon {
+  font-size: 1.25rem;
+  color: #ffd700;
+  line-height: 1;
+}
+
+.reels-side-fs-btn .fs-label {
+  font-family: var(--font-serif);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* ==========================================================================
+   MODAL TEATER LAYAR PENUH VERTIKAL MURNI (FORMAT ASLI 9:16 - TANPA MIRING & TANPA CROP)
+   ========================================================================== */
+.reels-fullscreen-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: rgba(4, 7, 12, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.reels-fullscreen-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.reels-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.reels-modal-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 94vh;
+  max-height: 94vh;
+  width: auto;
+  max-width: calc(94vh * (9 / 16));
+  aspect-ratio: 9 / 16;
+  box-sizing: border-box;
+}
+
+.reels-modal-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+}
+
+.reels-modal-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: auto;
+}
+
+.reels-modal-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffd700;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.reels-modal-badge {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  color: #eeddbb;
+  font-weight: 600;
+}
+
+.reels-modal-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(139, 24, 24, 0.85);
+  border: 1.5px solid #d4af37;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.reels-modal-close-btn:hover {
+  background: #a61e1e;
+  border-color: #ffd700;
+  transform: scale(1.05);
+}
+
+.reels-modal-screen-wrap {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  background: #000000;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 16px 50px rgba(0, 0, 0, 0.85),
+    0 0 0 2px rgba(212, 175, 55, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.reels-modal-video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: contain !important;
+  display: block;
+  background: #000000;
+}
+
+/* Native fullscreen backup */
+video:fullscreen,
+video:-webkit-full-screen,
+.reels-video:fullscreen,
+.reels-video:-webkit-full-screen {
+  object-fit: contain !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  margin: auto !important;
+  background: #000000 !important;
+}
+
+@media (max-width: 900px) {
+  .reels-phone-mockup {
+    width: 156px;
+    border-radius: 20px;
+    padding: 6px 5px 6px;
+  }
+  .phone-screen {
+    width: 144px;
+    height: 256px;
+  }
+  .phone-play-btn-circle {
+    width: 48px;
+    height: 48px;
+  }
+  .reels-fullscreen-btn {
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
+  .reels-modal-container {
+    height: 98vh;
+    max-height: 98vh;
+  }
+}
+
+/* ===================================================
+   HALAMAN AWARDS NAWALA BATCH 18 (6 HALAMAN / 3 SPREAD)
+   Desain Plakat Maritim Mewah: Font Tegas, Bingkai Foto Sinematik
+   =================================================== */
+
+.page-inner-awards {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px 14px 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.awards-board-header {
+  margin-bottom: 6px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* Plakat Kehormatan Utama: Grand Maritime Laureate Crest (Bespoke & Mewah, Menggantikan Papan Kayu Biasa) */
+.awards-grand-crest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(9, 18, 32, 0.97) 0%, rgba(20, 36, 60, 0.97) 50%, rgba(9, 18, 32, 0.97) 100%);
+  border: 1.5px solid #d4a853;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 235, 175, 0.6), inset 0 0 12px rgba(212, 168, 83, 0.25);
+  padding: 4px 14px;
+  margin: 0 auto 6px;
+  max-width: 90%;
+  width: fit-content;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.crest-side-ornament {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.crest-anchor-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  color: #ffd875;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.crest-filigree-line {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: linear-gradient(90deg, #d4a853 0%, transparent 100%);
+}
+
+.crest-side-ornament.right-wing .crest-filigree-line {
+  background: linear-gradient(270deg, #d4a853 0%, transparent 100%);
+}
+
+.crest-center-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.crest-sub-title {
+  font-family: 'Cinzel', 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffd875;
+  margin: 0 0 2px 0;
+  line-height: 1.1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+.crest-main-title {
+  font-family: 'Cinzel', 'Cinzel Decorative', 'Plus Jakarta Sans', Georgia, serif;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.15;
+  background: linear-gradient(180deg, #ffffff 0%, #ffe9b3 40%, #ffd875 70%, #d4a853 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+  white-space: nowrap;
+}
+
+/* 1. LAYOUT 1 HALAMAN 2 PLAKAT VERTIKAL BERDAMPINGAN (SMER & DIGMAR) - UTUH & MEGAH */
+.awards-division-duo-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2px 2px 4px;
+}
+
+.award-division-card-duo {
+  flex: 1 1 0;
+  width: calc(50% - 6px);
+  max-width: calc(50% - 6px);
+  background: #fffdf8;
+  border: 2.5px solid #734925;
+  border-radius: 9px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(212, 168, 83, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  box-sizing: border-box;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.award-division-card-duo:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 26px rgba(0, 0, 0, 0.35), inset 0 0 0 1.5px #ffd875;
+}
+
+/* Plakat Header Kategori Divisi: Royal Navy & Gold (Bebas Warna Merah) */
+.award-division-plaque-bar {
+  background: linear-gradient(90deg, #09121d 0%, #15253b 35%, #1e3553 50%, #15253b 65%, #09121d 100%);
+  border-bottom: 2px solid #d4a853;
+  padding: 5px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 230, 160, 0.3);
+  flex-shrink: 0;
+}
+
+.award-division-badge-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.award-division-title-text {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #fff9e6;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(212, 168, 83, 0.4);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Frame Foto Vertikal Proporsional: Seluruh Anggota Terlihat Utuh Tanpa Terpotong */
+.award-division-portrait-frame {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #0d1e33;
+  border-bottom: 2px solid #d4a853;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.award-division-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ornamen Sudut Logam Kuningan Maritim */
+.award-division-portrait-frame .brass-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 2;
+  border-color: #d4a853;
+  border-style: solid;
+}
+.award-division-portrait-frame .brass-tl {
+  top: 3px;
+  left: 3px;
+  border-width: 2px 0 0 2px;
+}
+.award-division-portrait-frame .brass-tr {
+  top: 3px;
+  right: 3px;
+  border-width: 2px 2px 0 0;
+}
+.award-division-portrait-frame .brass-bl {
+  bottom: 3px;
+  left: 3px;
+  border-width: 0 0 2px 2px;
+}
+.award-division-portrait-frame .brass-br {
+  bottom: 3px;
+  right: 3px;
+  border-width: 0 2px 2px 0;
+}
+
+/* Footer Plakat Juara Vertikal */
+.award-division-footer-duo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 6px 5px;
+  background: rgba(255, 252, 245, 0.98);
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.award-division-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.award-division-name-row .star-accent {
+  color: #d4a853;
+  font-size: 0.75rem;
+}
+
+.award-division-footer-duo .award-division-badge-name {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1a0f07;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.award-division-footer-duo .award-division-badge-sub {
+  font-family: var(--font-sans);
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #1a365d;
+  letter-spacing: 0.2px;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.award-division-fleet-tag {
+  display: inline-block;
+  background: rgba(26, 54, 93, 0.08);
+  border: 1px solid rgba(212, 168, 83, 0.55);
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-family: var(--font-sans);
+  font-size: 0.61rem;
+  font-weight: 700;
+  color: #1a365d;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* 2. LAYOUT MOOD BOOSTER ANGKATAN: FRAME KOTAK PRESISI (SQUARE 1:1) */
+.awards-single-container {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.award-card-moodbooster-square {
+  width: 275px;
+  max-width: 90%;
+  background: #fffdf8;
+  border: 2.5px solid #734925;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(212, 168, 83, 0.45);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Frame Foto Kotak 1:1 Presisi */
+.award-square-photo-frame {
+  width: 265px;
+  height: 265px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  background: #0d1e33;
+}
+
+/* Foto Memenuhi Kotak 100% Tanpa Warna Lain di Pinggirnya */
+.award-square-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
+}
+
+/* 3. LAYOUT 2 KOLOM BERDAMPINGAN UNTUK KATEGORI INDIVIDU */
+.awards-duo-columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.award-card-individual {
+  flex: 1 1 0;
+  width: calc(50% - 6px);
+  max-width: calc(50% - 6px);
+  display: flex;
+  flex-direction: column;
+  background: #fffdf8;
+  border: 2px solid #734925;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(212, 168, 83, 0.4);
+  overflow: hidden;
+  min-height: 0;
+  box-sizing: border-box;
+  cursor: default;
+}
+
+/* Plakat Header Kategori Awards: Royal Navy & Gold (Bebas Warna Merah) */
+.award-plaque-header {
+  background: linear-gradient(90deg, #09121d 0%, #15253b 35%, #1e3553 50%, #15253b 65%, #09121d 100%);
+  border-bottom: 2px solid #d4a853;
+  padding: 5px 6px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 230, 160, 0.3);
+  flex-shrink: 0;
+}
+
+.award-plaque-title {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #fff9e6;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(212, 168, 83, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Frame Foto Portrait Bersih Tanpa Icon Klik */
+.award-portrait-frame {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.award-person-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+/* Hapus Seluruh Badge Klik */
+.award-click-tag {
+  display: none;
+}
+
+/* Footer Nama Pemenang & Divisi */
+.award-card-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 6px 5px;
+  background: rgba(255, 252, 245, 0.98);
+  border-top: 1.5px solid #d4a853;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.award-winner-name {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1a0f07;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.award-winner-dept {
+  font-family: var(--font-sans);
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #1a365d;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* 4. LAYOUT HALAMAN 6: ROLL OF HONOR (HALL OF FAME) */
+.award-hall-of-fame-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(255, 252, 245, 0.98);
+  border: 2.5px solid #734925;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22), inset 0 0 0 1.5px rgba(212, 168, 83, 0.5);
+  padding: 10px 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.hof-trophy-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  border-bottom: 2px solid #d4a853;
+  padding-bottom: 4px;
+}
+
+.hof-trophy-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+}
+
+.hof-main-heading {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #102540;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.hof-sub-heading {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #102540;
+  text-transform: uppercase;
+}
+
+.hof-winners-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.hof-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(247, 238, 216, 0.7);
+  border: 1px solid rgba(138, 107, 65, 0.25);
+  border-left: 3px solid #d4a853;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+}
+
+.hof-tag {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  color: #1a365d;
+  font-size: 0.65rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.hof-item strong {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: #1a0f07;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.hof-footer-parchment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-top: 1px dashed rgba(115, 73, 37, 0.4);
+  padding-top: 5px;
+  gap: 2px;
+}
+
+.hof-anchor-icon {
+  color: #d4a853;
+  font-size: 0.9rem;
+}
+
+.hof-footer-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.68rem;
+  color: #3b2416;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.hof-batch-sign {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 0.65rem;
+  color: #1a365d;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   RESPONSIF UNIVERSAL BERBASIS CONTAINER QUERY (TABLET & MOBILE <= 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  /* 1. Header Navigasi Atas (Kotak Putih Diturunkan Lagi Sesuai Permintaan) */
+  .top-nav-bar {
+    top: max(48px, env(safe-area-inset-top, 48px)) !important;
+    padding: 6px 20px !important;
+    height: auto !important;
+    min-height: 44px !important;
+    max-width: min(92vw, 420px) !important;
+    gap: 10px !important;
+    border-radius: 26px !important;
+    background: #ffffff !important;
+    border: 1.5px solid rgba(138, 107, 65, 0.35) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28) !important;
+    box-sizing: border-box !important;
+  }
+  .top-nav-bar .top-logo-img {
+    height: 28px !important;
+  }
+  .top-nav-bar .title-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    line-height: 1.1 !important;
+    overflow: hidden !important;
+  }
+  .top-nav-bar .main-title {
+    font-size: clamp(0.78rem, 2.0vw, 0.95rem) !important;
+    letter-spacing: 1.2px !important;
+    color: #1e120c !important;
+    text-shadow: none !important;
+    white-space: nowrap !important;
+  }
+  .top-nav-bar .sub-title {
+    font-size: clamp(0.50rem, 1.2vw, 0.60rem) !important;
+    letter-spacing: 0.8px !important;
+    color: var(--bounty-red, #b31b1b) !important;
+    text-shadow: none !important;
+    white-space: nowrap !important;
+  }
+
+  /* 2. Tombol Navigasi di Mobile: Sembunyikan Panah Samping (User ingin navigasi di bawah slide) */
+  .side-arrow {
+    display: none !important;
+  }
+
+  .division-avatar-click-badge,
+  .iotm-click-badge,
+  .iotm-click-tip {
+    display: none !important;
+  }
+
+  /* 3. Flipbook Container: Posisi Seimbang dengan Ruang untuk Toolbar di Bawah */
+  .flipbook-container {
+    height: calc(100dvh - 125px) !important;
+    max-height: calc(100dvh - 120px) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 6px !important;
+    margin-bottom: 24px !important;
+    padding: 0 4px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Base Page Inner System */
+  .page-inner {
+    padding: 1.5cqh 2.2cqw 1.8cqh !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+  }
+
+  /* 5. Header Grand Crest Universal (Flyer Bounty & Leader Batch) - Tulisan Diperbesar */
+  .crew-grand-header {
+    padding: 0.8cqh 3cqw !important;
+    margin: 0 auto 1.0cqh !important;
+    max-width: 95% !important;
+    width: fit-content !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    gap: 1.5cqw !important;
+    border-radius: 20px !important;
+  }
+  .crew-grand-header .crew-header-text {
+    font-size: 3.4cqh !important;
+    letter-spacing: 0.3cqw !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+  .crew-grand-header .crew-header-star {
+    font-size: 2.6cqh !important;
+  }
+  .crew-grand-header .crew-header-anchor {
+    font-size: 3.0cqh !important;
+  }
+
+  /* 6. Flyer Bounty Grid (3 Kru per Slide) - Proporsi 1:1 Desktop */
+  .bounty-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.6cqw !important;
+    padding: 0 !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    align-items: stretch !important;
+  }
+  .wanted-poster {
+    height: 100% !important;
+    padding: 0.8cqh 0.8cqw 0.8cqh !important;
+    border: 2px solid #382619 !important;
+    border-radius: 5px !important;
+    box-shadow: inset 0 0 12px rgba(139, 90, 43, 0.35), 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.4cqh !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  .wanted-poster::after {
+    top: 2px !important;
+    left: 2px !important;
+    right: 2px !important;
+    bottom: 2px !important;
+    border: 1px solid #382619 !important;
+  }
+  .wanted-header {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 3.5cqh !important;
+    font-weight: 900 !important;
+    color: #24140a !important;
+    letter-spacing: 0.15cqw !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    transform: scaleY(1.05) !important;
+    flex-shrink: 0 !important;
+  }
+  .wanted-photo-slot {
+    width: calc(100% - 0.8cqw) !important;
+    height: 44cqh !important;
+    min-height: 44cqh !important;
+    max-height: 44cqh !important;
+    border: 1.5px solid #382619 !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1) !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .wanted-photo-slot img.kru-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+    display: block !important;
+  }
+
+  /* Penyesuaian Khusus Foto Kru Bounty yang Mentok / Terpotong Batasnya */
+  /* Nur Fatya: turunkan posisi agar tidak lewat batas foto */
+  .wanted-poster[data-crew-id="15"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-15 {
+    transform: scale(1.04) !important;
+    transform-origin: center center !important;
+    object-position: center 26% !important;
+  }
+  /* Eka Sri */
+  .wanted-poster[data-crew-id="19"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-19 {
+    transform: scale(1.12) !important;
+    transform-origin: top center !important;
+    object-position: center 15% !important;
+  }
+  /* Dzun Nurain */
+  .wanted-poster[data-crew-id="11"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-11 {
+    transform: scale(1.12) !important;
+    transform-origin: top center !important;
+    object-position: center 12% !important;
+  }
+  /* Andi Alief Idham */
+  .wanted-poster[data-crew-id="13"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-13 {
+    transform: scale(1.14) !important;
+    transform-origin: top center !important;
+    object-position: center 15% !important;
+  }
+  /* Siti Salwa */
+  .wanted-poster[data-crew-id="29"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-29 {
+    transform: scale(1.12) !important;
+    transform-origin: top center !important;
+    object-position: center 15% !important;
+  }
+  /* Made Rizal: kurangi zoom dan turunkan posisi agar rambut tidak terpotong */
+  .wanted-poster[data-crew-id="31"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-31 {
+    transform: scale(1.05) !important;
+    transform-origin: center center !important;
+    object-position: center 28% !important;
+  }
+  /* Ahmad Arif */
+  .wanted-poster[data-crew-id="32"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-32 {
+    transform: scale(1.14) !important;
+    transform-origin: top center !important;
+    object-position: center 12% !important;
+  }
+  /* Juliana: turunkan posisi agar tidak lewat batas foto */
+  .wanted-poster[data-crew-id="33"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-33 {
+    transform: scale(1.04) !important;
+    transform-origin: center center !important;
+    object-position: center 26% !important;
+  }
+  /* Nigel */
+  .wanted-poster[data-crew-id="35"] .wanted-photo-slot img.kru-img,
+  .kru-img.kru-img-35 {
+    transform: scale(1.15) !important;
+    transform-origin: top center !important;
+    object-position: center 15% !important;
+  }
+
+  .wanted-doa-banner {
+    width: 92% !important;
+    margin: 0 !important;
+    padding: 0.15cqh 0 !important;
+    border-top: 1px solid #4a2d18 !important;
+    border-bottom: 1px solid #4a2d18 !important;
+    gap: 0.8cqw !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .doa-text {
+    font-family: var(--font-bebas) !important;
+    font-size: 3.0cqh !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3cqw !important;
+    color: #8b1818 !important;
+    line-height: 1 !important;
+  }
+  .doa-star {
+    font-size: 1.8cqh !important;
+    color: #8b1818 !important;
+    line-height: 1 !important;
+  }
+  .wanted-name-box {
+    height: 5.6cqh !important;
+    min-height: 5.6cqh !important;
+    max-height: 5.6cqh !important;
+    width: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+  }
+  .wanted-name {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 2.8cqh !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    color: #24140a !important;
+    letter-spacing: 0.05cqw !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 96% !important;
+  }
+  .wanted-details-wrap {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-evenly !important;
+    gap: 0.2cqh !important;
+    margin: 0 !important;
+  }
+  .wanted-role-badge {
+    font-family: var(--font-bebas) !important;
+    font-size: 2.2cqh !important;
+    letter-spacing: 0.15cqw !important;
+    padding: 0.15cqh 1.5cqw !important;
+    border-radius: 6px !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .wanted-division {
+    font-family: var(--font-serif) !important;
+    font-size: 2.2cqh !important;
+    font-weight: 700 !important;
+    color: #4a2d18 !important;
+    line-height: 1.15 !important;
+    width: 92% !important;
+    border-bottom: 1px dashed rgba(115, 73, 37, 0.4) !important;
+    padding-bottom: 0.15cqh !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+  }
+  .wanted-quote-box {
+    width: 96% !important;
+    flex: 1 1 auto !important;
+    min-height: 9cqh !important;
+    max-height: 15cqh !important;
+    padding: 0.4cqh 0.8cqw !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(139, 90, 43, 0.35) !important;
+    border-left: 2.5px solid #8b1818 !important;
+    border-radius: 3px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  .wanted-quote-text {
+    font-family: 'Playfair Display', Georgia, 'IM Fell English', serif !important;
+    font-size: 2.3cqh !important;
+    line-height: 1.25 !important;
+    font-style: italic !important;
+    font-weight: 700 !important;
+    color: #1a0a04 !important;
+    text-align: center !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+  }
+
+  /* 7. Kartu 2 Leader Batch (Halaman 22) - Proporsi Tegak & Gagah */
+  .page-inner-leaders {
+    padding: 1.5cqh 2.2cqw 1.8cqh !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+  }
+  .bounty-grid-2 {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 3.5cqw !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .wanted-poster.wanted-poster-leader {
+    flex: 0 1 42cqw !important;
+    width: 42cqw !important;
+    max-width: 44cqw !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    padding: 0.8cqh 1.0cqw 0.8cqh !important;
+    border: 2.5px solid #382619 !important;
+    border-radius: 6px !important;
+    gap: 0.4cqh !important;
+  }
+  .wanted-poster-leader .wanted-header {
+    font-size: 3.8cqh !important;
+  }
+  .wanted-poster-leader .wanted-photo-slot {
+    height: 48cqh !important;
+    min-height: 48cqh !important;
+    max-height: 48cqh !important;
+  }
+  .wanted-poster-leader .doa-text {
+    font-size: 3.2cqh !important;
+  }
+  .wanted-poster-leader .wanted-name-box {
+    height: 6.0cqh !important;
+    min-height: 6.0cqh !important;
+    max-height: 6.0cqh !important;
+  }
+  .wanted-poster-leader .wanted-name {
+    font-size: 3.2cqh !important;
+  }
+  .wanted-poster-leader .leader-details-wrap {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-evenly !important;
+    gap: 0.2cqh !important;
+    margin: 0 !important;
+  }
+  .wanted-poster-leader .wanted-role-badge.role-leader-batch {
+    font-size: 2.5cqh !important;
+    padding: 0.2cqh 2.2cqw !important;
+  }
+  .wanted-poster-leader .wanted-division.leader-division {
+    font-size: 2.4cqh !important;
+    width: 90% !important;
+  }
+  .wanted-poster-leader .wanted-quote-box.leader-quote-box {
+    width: 96% !important;
+    flex: 1 1 auto !important;
+    min-height: 10cqh !important;
+    max-height: 17cqh !important;
+    padding: 0.4cqh 1.2cqw !important;
+  }
+  .wanted-poster-leader .wanted-quote-text.leader-quote-text {
+    font-size: 2.6cqh !important;
+    -webkit-line-clamp: 3 !important;
+  }
+
+  /* 8. Halaman Divisi: Tulisan Diperbesar & Anggota Terisi Rapi Tanpa Ruang Kosong */
+  .page-inner-division {
+    padding: 1.2cqh 2.2cqw 1.5cqh !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .division-top-header {
+    margin-bottom: 1.0cqh !important;
+  }
+  .division-title-badge {
+    padding: 0.7cqh 3.5cqw !important;
+    gap: 1.5cqw !important;
+    border-radius: 22px !important;
+  }
+  .division-main-title {
+    font-size: 3.6cqh !important;
+    letter-spacing: 0.3cqw !important;
+  }
+  .title-anchor {
+    font-size: 3.0cqh !important;
+  }
+  .division-body-card {
+    padding: 1.2cqh 2.0cqw !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    border-radius: 10px !important;
+    gap: 0.8cqh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .division-photo-row {
+    gap: 2.5cqw !important;
+    margin-bottom: 0.4cqh !important;
+    height: 38cqh !important;
+    min-height: 38cqh !important;
+  }
+  .division-photo-frame {
+    width: 45% !important;
+    height: 100% !important;
+    border-radius: 8px !important;
+  }
+  .division-desc-box {
+    padding: 1.6cqh 2.8cqw !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+  .desc-heading {
+    font-size: 2.9cqh !important;
+    margin-bottom: 0.5cqh !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.15cqw !important;
+  }
+  .desc-text {
+    font-size: 2.6cqh !important;
+    line-height: 1.42 !important;
+    font-weight: 500 !important;
+  }
+  .division-crew-avatar-btn[data-division-crew-id="2"] .avatar-round-img {
+    object-position: center 12% !important;
+    transform: scale(1.0) !important;
+  }
+  .division-crew-section {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-evenly !important;
+  }
+  .division-crew-title-bar {
+    padding: 0.3cqh 0 !important;
+    margin-bottom: 0.4cqh !important;
+  }
+  .division-crew-heading {
+    font-size: 2.4cqh !important;
+  }
+  .division-crew-avatars-grid {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+  }
+  .division-crew-avatar-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.3cqh !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* 2 Anggota (Front Office - Hal 4, Program Development) - Avatar 24cqh Mengisi Penuh Ruang */
+  .crew-count-2 {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8cqw !important;
+    width: 100% !important;
+  }
+  .crew-count-2 .avatar-round-slot {
+    width: 24cqh !important;
+    height: 24cqh !important;
+    border-width: 3px !important;
+  }
+  .crew-count-2 .avatar-round-caption {
+    font-size: 2.8cqh !important;
+  }
+  .crew-count-2 .avatar-round-role {
+    font-size: 2.2cqh !important;
+  }
+
+  /* 3 Anggota (Creative Design, SMS, Legal) */
+  .crew-count-3 {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 5cqw !important;
+    width: 100% !important;
+  }
+  .crew-count-3 .avatar-round-slot {
+    width: 18cqh !important;
+    height: 18cqh !important;
+    border-width: 2.5px !important;
+  }
+  .crew-count-3 .avatar-round-caption {
+    font-size: 2.5cqh !important;
+  }
+  .crew-count-3 .avatar-round-role {
+    font-size: 2.0cqh !important;
+  }
+
+  /* 4 Anggota (Content Producer): Grid 4 Kolom Proporsional, Avatar 16cqh Elegan & Rapi */
+  .crew-count-4 {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5cqw !important;
+    width: 98% !important;
+    max-width: 98% !important;
+    margin: 0 auto !important;
+    justify-items: center !important;
+    align-items: center !important;
+  }
+  .crew-count-4 .division-crew-avatar-btn {
+    width: 100% !important;
+    max-width: 22cqw !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.3cqh !important;
+    cursor: pointer !important;
+  }
+  .crew-count-4 .avatar-round-slot {
+    width: 16cqh !important;
+    height: 16cqh !important;
+    border: 2.5px solid #d4af37 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), inset 0 0 8px rgba(212, 175, 55, 0.35) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+  .crew-count-4 .avatar-round-caption {
+    font-size: 2.3cqh !important;
+    font-weight: 800 !important;
+    color: #1a0f07 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    letter-spacing: 0.2px !important;
+  }
+  .crew-count-4 .avatar-round-role {
+    font-size: 1.8cqh !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    padding: 0.1cqh 0.8cqw !important;
+    border-radius: 4px !important;
+    background: #0d284e !important;
+    color: #ffd700 !important;
+    letter-spacing: 0.4px !important;
+  }
+
+  /* 6 Anggota (SMER, DIGMAR, ECM): Format Grid 3x2 Presisi Desktop Agar Tidak Meluber Keluar */
+  .crew-count-6 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.6cqh 2cqw !important;
+    justify-items: center !important;
+    align-content: center !important;
+    width: 96% !important;
+    max-width: 98% !important;
+    margin: 0 auto !important;
+  }
+  .crew-count-6 .division-crew-avatar-btn {
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  .crew-count-6 .avatar-round-slot {
+    width: 11.5cqh !important;
+    height: 11.5cqh !important;
+    border-width: 2px !important;
+  }
+  .crew-count-6 .avatar-round-caption {
+    font-size: 2.1cqh !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .crew-count-6 .avatar-round-role {
+    font-size: 1.7cqh !important;
+  }
+
+  /* 9. Halaman Awards: Judul Proporsional & Kalibrasi Foto Made & Saranigel */
+  .page-inner-awards {
+    padding: 1.2cqh 2.2cqw 1.5cqh !important;
+    box-sizing: border-box !important;
+  }
+  .awards-grand-crest {
+    padding: 0.8cqh 2cqw !important;
+    margin-bottom: 1.0cqh !important;
+    gap: 2cqw !important;
+    width: 96% !important;
+    max-width: 98% !important;
+  }
+  .crest-center-body {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .crest-sub-title {
+    font-size: 2.1cqh !important;
+    letter-spacing: 0.15cqw !important;
+    margin-bottom: 0.2cqh !important;
+    white-space: normal !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .crest-main-title {
+    font-size: 3.0cqh !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.15cqw !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+  .crest-anchor-icon {
+    font-size: 3.0cqh !important;
+  }
+  .awards-division-duo-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 2.5cqw !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+  .award-division-card-duo {
+    flex: 1 1 0 !important;
+    width: calc(50% - 1.5cqw) !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+  .award-division-plaque-bar {
+    padding: 0.5cqh 1cqw !important;
+    min-height: 4.5cqh !important;
+  }
+  .award-division-title-text {
+    font-size: 2.5cqh !important;
+    letter-spacing: 0.2cqw !important;
+  }
+  .award-division-portrait-frame {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  .award-division-footer-duo {
+    padding: 0.5cqh 1cqw !important;
+    flex-shrink: 0 !important;
+  }
+  .award-division-badge-name {
+    font-size: 2.8cqh !important;
+  }
+  .award-division-badge-sub {
+    font-size: 2.2cqh !important;
+  }
+
+  /* Mood Booster Square (Aqshara & Nigel) */
+  .award-card-moodbooster-square {
+    width: 52cqw !important;
+    max-width: 92% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 8px !important;
+  }
+  .award-square-photo-frame {
+    width: 100% !important;
+    height: 48cqh !important;
+    min-height: 48cqh !important;
+  }
+  .award-square-photo-frame .award-square-img,
+  .award-square-img {
+    object-position: center 15% !important;
+  }
+  .award-card-moodbooster-square .award-plaque-title {
+    font-size: 2.6cqh !important;
+  }
+  .award-card-moodbooster-square .award-winner-name {
+    font-size: 2.8cqh !important;
+  }
+  .award-card-moodbooster-square .award-winner-dept {
+    font-size: 2.2cqh !important;
+  }
+
+  /* Individual Duo Columns (Best Leader, Anggota Terbaik Made, dll.) */
+  .awards-duo-columns {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 2.5cqw !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+  }
+  .award-card-individual {
+    flex: 1 1 0 !important;
+    width: calc(50% - 1.5cqw) !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+  }
+  .award-portrait-frame.individual-portrait-frame {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  /* Khusus Foto Made di Anggota Terbaik: Kurangi Zoom & Turunkan Posisi */
+  .award-card-individual[data-award-id="anggota_terbaik"] .award-person-img,
+  .award-person-img[src*="kru31"] {
+    transform: scale(1.05) !important;
+    transform-origin: center center !important;
+    object-position: center 28% !important;
+  }
+  .award-card-individual .award-plaque-title {
+    font-size: 2.5cqh !important;
+  }
+  .award-card-individual .award-winner-name {
+    font-size: 2.8cqh !important;
+  }
+  .award-card-individual .award-winner-dept {
+    font-size: 2.2cqh !important;
+  }
+
+  /* Hall of Fame */
+  .award-hall-of-fame-wrap {
+    padding: 1.5cqh 2cqw !important;
+    border-radius: 8px !important;
+  }
+  .hof-trophy-icon {
+    font-size: 4cqh !important;
+  }
+  .hof-item {
+    font-size: 2.4cqh !important;
+    padding: 0.3cqh 1cqw !important;
+  }
+
+  /* 10. Halaman Management (Slide 3) - Ruang Kosong Ditiadakan, Mengisi Penuh Megah */
+  .page-inner-mgmt {
+    padding: 1.5cqh 2.5cqw 1.8cqh !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .wooden-board-header {
+    padding: 1.0cqh 3.5cqw !important;
+    margin-bottom: 1.2cqh !important;
+    border-radius: 20px !important;
+  }
+  .wooden-board-title {
+    font-size: 3.5cqh !important;
+  }
+  .mgmt-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 3.5cqw !important;
+    height: 100% !important;
+    align-items: stretch !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+  }
+  .mgmt-card {
+    padding: 1.8cqh 2.2cqw !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-evenly !important;
+    border-radius: 12px !important;
+    border-width: 2.5px !important;
+  }
+  .mgmt-photo-frame {
+    height: 58cqh !important;
+    width: auto !important;
+    aspect-ratio: 18 / 22 !important;
+    max-width: 95% !important;
+    border-radius: 10px !important;
+    border-width: 3px !important;
+  }
+  .mgmt-name {
+    font-size: 3.6cqh !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin: 0.5cqh 0 !important;
+    text-align: center !important;
+  }
+  .mgmt-role-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.4cqh !important;
+    width: 95% !important;
+    text-align: center !important;
+  }
+  .mgmt-title {
+    font-size: 2.7cqh !important;
+    font-weight: 800 !important;
+  }
+  .mgmt-period {
+    font-size: 2.3cqh !important;
+    font-weight: 700 !important;
+  }
+
+  /* 11. Halaman Manifesto (Slide 2) - Padat, Gagah, Mengisi Seluruh Kartu Tanpa Ruang Kosong */
+  .manifesto-container {
+    padding: 1.5cqh 2.2cqw 1.8cqh !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+  }
+  .manifesto-card {
+    padding: 2.0cqh 3.0cqw !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    border-radius: 12px !important;
+    border-width: 2.5px !important;
+    box-sizing: border-box !important;
+  }
+  .manifesto-top-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3.5cqw !important;
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  .manifesto-logo-box {
+    flex: 0 0 36% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+  }
+  .manifesto-logo-img {
+    max-height: 32cqh !important;
+    max-width: 100% !important;
+    width: auto !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12)) !important;
+  }
+  .manifesto-pillars-col {
+    flex: 1 1 64% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.9cqh !important;
+    justify-content: center !important;
+  }
+  .manifesto-pillar-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.2cqh !important;
+  }
+  .manifesto-pillar-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5cqw !important;
+  }
+  .pillar-bullet-dot {
+    width: 1.8cqh !important;
+    height: 1.8cqh !important;
+  }
+  .pillar-label {
+    font-size: 3.0cqh !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+  }
+  .pillar-desc-text {
+    font-size: 2.5cqh !important;
+    line-height: 1.35 !important;
+    padding-left: 2.0cqw !important;
+  }
+  .manifesto-divider-wrap {
+    margin: 1.0cqh 0 !important;
+  }
+  .manifesto-divider-line {
+    height: 2px !important;
+  }
+  .manifesto-narrative-section {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 1.0cqh !important;
+    padding: 0.4cqh 0 !important;
+    flex: 1 1 auto !important;
+  }
+  .manifesto-paragraph {
+    font-size: 2.8cqh !important;
+    line-height: 1.45 !important;
+  }
+
+  /* 12. Halaman Intern of the Month (Slide 15-16) */
+  .page-inner-iotm {
+    padding: 1.2cqh 2.2cqw 1.5cqh !important;
+    box-sizing: border-box !important;
+  }
+  .iotm-board-header {
+    padding: 0.5cqh 2.5cqw !important;
+    margin-bottom: 0.8cqh !important;
+  }
+  .iotm-month-ribbon-badge {
+    font-size: 2.8cqh !important;
+  }
+  .iotm-month-body-single {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 3.2cqh !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+  .iotm-card-single {
+    min-height: 38cqh !important;
+    padding: 2.0cqh 2.8cqw !important;
+    gap: 3.2cqw !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+  .iotm-avatar-slot {
+    width: 25cqh !important;
+    height: 25cqh !important;
+  }
+  .iotm-person-name {
+    font-size: 3.6cqh !important;
+    margin-bottom: 0.3cqh !important;
+  }
+  .iotm-person-division {
+    font-size: 2.5cqh !important;
+    padding: 0.3cqh 1.4cqw !important;
+  }
+  .iotm-quote-card {
+    padding: 0.9cqh 2.0cqw !important;
+    cursor: pointer !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.4cqh !important;
+    border-radius: 8px !important;
+  }
+  .iotm-quote-text {
+    font-size: 2.7cqh !important;
+    line-height: 1.35 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+  }
+  .iotm-message-text {
+    font-size: 2.4cqh !important;
+    line-height: 1.35 !important;
+    color: #4a2810 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+  }
+
+  /* 13. Halaman Mini Movie: Smartphone Mockup Bebas, Vertikal Elegan & Sinematik */
+  .page-minimovie {
+    overflow: visible !important;
+  }
+  .page-minimovie .page-inner-movie {
+    padding: 0 !important;
+    overflow: visible !important;
+    position: relative !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  .page-minimovie .movie-board-header {
+    position: absolute !important;
+    top: -5.5cqh !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 60 !important;
+    margin: 0 !important;
+    padding: 0.6cqh 3cqw !important;
+    white-space: nowrap !important;
+    border-radius: 18px !important;
+  }
+  .page-minimovie .movie-board-header .wooden-board-title {
+    font-size: 3.2cqh !important;
+  }
+  .page-minimovie .reels-theater-layout {
+    overflow: visible !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .page-minimovie .reels-stage-wrap {
+    overflow: visible !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .page-minimovie .reels-phone-mockup {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    height: min(54vh, 440px) !important;
+    width: auto !important;
+    aspect-ratio: 9 / 16 !important;
+    max-width: 82vw !important;
+    padding: 4px 4px 6px !important;
+    border: 3.5px solid #734925 !important;
+    border-radius: 28px !important;
+    background: #080f1a !important;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.35) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    z-index: 55 !important;
+  }
+  .page-minimovie .phone-speaker-notch {
+    display: block !important;
+    width: 32px !important;
+    height: 4px !important;
+    background: #1a293d !important;
+    border-radius: 4px !important;
+    margin: 2px 0 4px !important;
+    flex-shrink: 0 !important;
+  }
+  .page-minimovie .phone-home-indicator {
+    display: block !important;
+    width: 38px !important;
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 4px !important;
+    margin: 4px auto 2px !important;
+    flex-shrink: 0 !important;
+  }
+  .page-minimovie .phone-screen {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background: #000000 !important;
+  }
+  .page-minimovie .reels-video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    background: #000000 !important;
+    display: block !important;
+  }
+  .page-minimovie .reels-side-actions {
+    display: none !important;
+  }
+
+  /* 14. Sampul Belakang */
+  .back-cover-content {
+    padding: 2.5cqh 3cqw !important;
+    gap: 2cqh !important;
+  }
+  .back-cover-logo-img {
+    max-height: 25cqh !important;
+  }
+  .back-cover-main-title {
+    font-size: 4.5cqh !important;
+  }
+  .back-cover-institution-title {
+    font-size: 2.8cqh !important;
+  }
+
+  /* 15. Floating Bottom Toolbar: Heyzine Glassmorphism Mewah & Tombol Audio Interaktif */
+  .flipbook-toolbar {
+    position: fixed !important;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 999999 !important;
+    padding: 6px 14px !important;
+    gap: 8px !important;
+    border-radius: 32px !important;
+    background: rgba(14, 9, 6, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 2px solid rgba(212, 175, 55, 0.85) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.92), 0 0 20px rgba(212, 175, 55, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    max-width: 95vw !important;
+    box-sizing: border-box !important;
+  }
+  .toolbar-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.15rem !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  #prevBtn,
+  #nextBtn {
+    display: flex !important;
+    color: #ffd700 !important;
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    background: rgba(212, 175, 55, 0.25) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.75) !important;
+  }
+  #musicBtn {
+    display: flex !important;
+    color: #ffd700 !important;
+    font-size: 1.15rem !important;
+    background: rgba(212, 175, 55, 0.22) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.7) !important;
+  }
+  #fullscreenBtn {
+    display: flex !important;
+    color: #ffd700 !important;
+    font-size: 1.05rem !important;
+    background: rgba(212, 175, 55, 0.2) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.6) !important;
+  }
+  .toolbar-btn:active {
+    background: rgba(212, 175, 55, 0.5) !important;
+    transform: scale(0.90) !important;
+  }
+  .toolbar-btn.playing {
+    color: #ffffff !important;
+    background: rgba(212, 175, 55, 0.45) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.85), inset 0 0 6px rgba(255, 215, 0, 0.5) !important;
+  }
+  .page-indicator-pill {
+    padding: 6px 16px !important;
+    font-size: 0.80rem !important;
+    font-weight: 800 !important;
+    font-family: var(--font-display) !important;
+    color: #ffd700 !important;
+    background: rgba(25, 15, 10, 0.94) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.65) !important;
+    border-radius: 18px !important;
+    min-width: 96px !important;
+    text-align: center !important;
+    letter-spacing: 0.8px !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  }
+  #zoomBtn,
+  .zoom-btn,
+  .toolbar-divider {
+    display: none !important;
+  }
+}
+
+/* Optimasi Khusus Mode Landscape Layar Sempit (HP Diputar Miring: misal 844x390, 800x360) */
+@media (max-height: 520px) and (orientation: landscape) {
+  .top-nav-bar {
+    display: none !important;
+  }
+  .side-arrow {
+    display: none !important;
+  }
+  .flipbook-container {
+    height: calc(100dvh - 55px) !important;
+    max-height: calc(100dvh - 50px) !important;
+    padding: 0 2px !important;
+  }
+  .flipbook-toolbar {
+    bottom: 4px !important;
+    padding: 2px 8px !important;
+    gap: 4px !important;
+  }
+  .toolbar-btn {
+    min-width: 38px !important;
+    min-height: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 0.85rem !important;
+  }
+  .page-indicator-pill {
+    padding: 2px 8px !important;
+    font-size: 0.62rem !important;
+    min-width: 68px !important;
+  }
+}
+
+#deskViewport.fullscreen-focus .side-arrow:hover {
+  opacity: 1;
+}
+
