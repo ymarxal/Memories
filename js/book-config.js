@@ -412,7 +412,7 @@ const BOOK_CONFIG = {
             "name": "Fitrisky Nur Maharani",
             "division": "Small Medium Enterprise Relations",
             "photo": "assets/kru/kru6.png",
-            "quote": "Learn, try, adn grow together",
+            "quote": "Learn, try, and grow together",
             "message": "Terimakasih rumah bumn makassar atas kesempatan dan pengalaman berharga yang diberikan. Kedepannya, saya berharap bisa terus belajar dan memberi kontribusi yang lebih baik"
           }
         ]
@@ -445,15 +445,15 @@ const BOOK_CONFIG = {
             "name": "Nur Fatya",
             "division": "Event & Community Management",
             "photo": "assets/kru/kru15.png",
-            "quote": "growth begins outside you comfort zone",
+            "quote": "Growth begins outside your comfort zone",
             "message": "awalnya saya datang kerumah bumn untuk belajar dan berkembang. Ternyata saya tidak hanya mendapatkan ilmu dan pengalaman, tetapi juga menemukan keluarga yang saling mendukung dan menginspirasi. Terima kasih rumah bumn makassar atas setiap kesempatan dan kenangan yang begitu berarti"
           },
           {
             "name": "Fatihah Nurislami Ramadhani",
-            "division": "Sosial Media Strategits",
+            "division": "Social Media Strategist",
             "photo": "assets/kru/kru34.png",
             "quote": "No small effort is ever waste",
-            "message": "Started with 0% intership experience. left rb with 1001x experience, lessons, and memories"
+            "message": "Started with 0% internship experience. Left RB with 1001x experience, lessons, and memories"
           }
         ]
       },

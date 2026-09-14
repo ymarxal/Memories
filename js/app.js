@@ -1601,31 +1601,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (handleBookInteraction(e.target)) e.stopPropagation();
   });
 
-  // Touch handler khusus mobile — deteksi tap pendek (bukan swipe/drag)
-  bookElement.addEventListener("touchstart", (e) => {
-    if (e.touches && e.touches.length === 1) {
-      _bookTouchX = e.touches[0].clientX;
-      _bookTouchY = e.touches[0].clientY;
-    }
-  }, { passive: true });
+  // Touch handler di document-level CAPTURE phase — memastikan terpicu
+  // sebelum PageFlip library bisa menelan event (fix flyer bounty di HP)
+  let _docTouchX = 0, _docTouchY = 0;
 
-  bookElement.addEventListener("touchend", (e) => {
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length === 1) {
+      _docTouchX = e.touches[0].clientX;
+      _docTouchY = e.touches[0].clientY;
+    }
+  }, { passive: true, capture: true });
+
+  document.addEventListener("touchend", (e) => {
     if (e.changedTouches && e.changedTouches.length === 1) {
-      const dx = Math.abs(e.changedTouches[0].clientX - _bookTouchX);
-      const dy = Math.abs(e.changedTouches[0].clientY - _bookTouchY);
-      // Hanya proses sebagai tap bukan swipe (gerakan < 15px)
-      if (dx < 15 && dy < 15) {
-        const el = document.elementFromPoint(
-          e.changedTouches[0].clientX,
-          e.changedTouches[0].clientY
-        );
+      const touch = e.changedTouches[0];
+      const dx = Math.abs(touch.clientX - _docTouchX);
+      const dy = Math.abs(touch.clientY - _docTouchY);
+      // Tap pendek, bukan swipe
+      if (dx < 12 && dy < 12) {
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
         if (el && handleBookInteraction(el)) {
           e.preventDefault();
-          e.stopPropagation();
+          e.stopImmediatePropagation();
         }
       }
     }
-  }, { passive: false });
+  }, { passive: false, capture: true });
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && quoteModal && quoteModal.classList.contains("active")) {
@@ -1638,60 +1639,84 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== DISMISS LOADING SCREEN =====
   const loadingScreen = document.getElementById('appLoadingScreen');
   const loadingBar = document.getElementById('loadingBarFill');
+  const loadingHint = document.getElementById('loadingHint');
 
   function dismissLoader() {
     if (!loadingScreen) return;
     if (loadingBar) loadingBar.style.width = '100%';
+    if (loadingHint) loadingHint.textContent = 'Siap! Selamat menikmati Memories Nawala ✨';
     setTimeout(() => {
       loadingScreen.classList.add('fade-out');
       setTimeout(() => {
         if (loadingScreen.parentNode) loadingScreen.parentNode.removeChild(loadingScreen);
       }, 700);
-    }, 300);
+    }, 400);
   }
 
-  // Dua kondisi untuk dismiss: bar >= 50% DAN musik siap
+  // Dua kondisi dismiss: bar >= 60% DAN musik sudah canplay
   let isDismissed = false;
-  let barReachedHalf = false;
+  let barReachedTarget = false;
   let musicReady = false;
 
   function tryDismiss() {
-    if (!isDismissed && barReachedHalf && musicReady) {
+    if (!isDismissed && barReachedTarget && musicReady) {
       isDismissed = true;
       if (barInterval) clearInterval(barInterval);
       dismissLoader();
     }
   }
 
-  // Animasikan progress bar
+  // Progress bar — lebih lambat, target dismiss di 60-70%
   let barInterval;
   let currentProgress = 0;
+  const BAR_TARGET = 60 + Math.floor(Math.random() * 11); // 60–70%
   if (loadingBar) {
     barInterval = setInterval(() => {
-      currentProgress = Math.min(currentProgress + (Math.random() * 12 + 4), 92);
+      // Semakin lambat mendekati target (efek organik)
+      const step = currentProgress < 40
+        ? (Math.random() * 6 + 2)
+        : (Math.random() * 3 + 0.8);
+      currentProgress = Math.min(currentProgress + step, 95);
       loadingBar.style.width = currentProgress + '%';
-      if (currentProgress >= 50 && !barReachedHalf) {
-        barReachedHalf = true;
+
+      // Update hint text sesuai progress
+      if (loadingHint) {
+        if (currentProgress < 30) {
+          loadingHint.textContent = 'Memuat halaman... 🗺️';
+        } else if (currentProgress < 55) {
+          loadingHint.textContent = 'Menyiapkan memories... 🎵';
+        } else if (currentProgress < BAR_TARGET) {
+          loadingHint.textContent = 'Hampir siap, sebentar lagi...';
+        }
+      }
+
+      if (currentProgress >= BAR_TARGET && !barReachedTarget) {
+        barReachedTarget = true;
         tryDismiss();
       }
-      if (currentProgress >= 92) clearInterval(barInterval);
-    }, 180);
+      if (currentProgress >= 95) clearInterval(barInterval);
+    }, 220);
   } else {
-    barReachedHalf = true;
+    barReachedTarget = true;
   }
 
-  // Cek apakah musik sudah siap
+  // Putar preview reff musik saat loading
   if (bgMusic) {
-    if (bgMusic.readyState >= 3) {
-      // Sudah cukup ter-buffer
+    // Coba putar langsung (diam-diam, tanpa mengganggu autoplay policy)
+    const tryPreview = () => {
+      bgMusic.volume = 0.45;
+      bgMusic.play().catch(() => {});
+    };
+    if (bgMusic.readyState >= 2) {
+      tryPreview();
       musicReady = true;
     } else {
       bgMusic.addEventListener('canplay', () => {
+        tryPreview();
         musicReady = true;
         tryDismiss();
       }, { once: true });
       bgMusic.addEventListener('error', () => {
-        // Musik error, tetap lanjut
         musicReady = true;
         tryDismiss();
       }, { once: true });
@@ -1700,13 +1725,14 @@ document.addEventListener("DOMContentLoaded", () => {
     musicReady = true;
   }
 
-  // Fallback: 7 detik kalau kondisi tak terpenuhi
+  // Fallback: 10 detik maksimal agar tidak stuck selamanya
   setTimeout(() => {
     if (!isDismissed) {
       isDismissed = true;
       if (barInterval) clearInterval(barInterval);
       dismissLoader();
     }
-  }, 7000);
+  }, 10000);
 });
+
 
