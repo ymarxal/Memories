@@ -988,7 +988,7 @@ const BOOK_CONFIG = {
     "assets/images/halaman terakhir 5.png"
   ],
   "awards": {
-    "title": "INTERNSHIP RUMAH BUMN MAKASSAR BATCH 18 AWARDS",
+    "title": "BATCH 18 AWARDS",
     "subtitle": "PENGHARGAAN SPESIAL INSAN NAWALA",
     "pages": [
       {
