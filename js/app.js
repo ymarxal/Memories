@@ -692,19 +692,37 @@ document.addEventListener("DOMContentLoaded", () => {
               <!-- Frame Smartphone / Reels 9:16 Vertikal di Tengah Halaman -->
               <div class="reels-phone-mockup">
                 <div class="phone-speaker-notch"></div>
-                <div class="phone-screen" id="phoneScreenWrapper" style="cursor: pointer;" title="Klik untuk memutar video">
+                <div class="phone-screen" id="phoneScreenWrapper" style="cursor: pointer; position: relative;" title="Klik untuk memutar video langsung">
                   <img src="${encodeURI(miniMovieData.poster)}" 
                        alt="${miniMovieData.title}" 
+                       id="phonePosterImg"
                        class="reels-video"
-                       style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                       style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0;"
                        onerror="this.src='assets/images/LOGOKU.png';">
-                  <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video">
+                  <video id="inlinePhoneVideo"
+                         class="reels-video"
+                         playsinline
+                         webkit-playsinline
+                         controls
+                         preload="none"
+                         style="width: 100%; height: 100%; object-fit: cover; background: #000; display: none; position: absolute; inset: 0; z-index: 2;">
+                    <source src="${encodeURI(miniMovieData.source)}" type="video/quicktime">
+                  </video>
+                  <iframe id="inlinePhoneIframe"
+                          class="reels-video"
+                          src="about:blank"
+                          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                          allowfullscreen
+                          style="width: 100%; height: 100%; border: 0; display: none; position: absolute; inset: 0; z-index: 2; background: #000;"
+                          title="${miniMovieData.title}">
+                  </iframe>
+                  <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video langsung">
                     <div class="phone-play-btn-circle">
                       <svg viewBox="0 0 24 24" width="32" height="32" fill="#ffffff">
                         <path d="M8 5v14l11-7z"/>
                       </svg>
                     </div>
-                    <span class="phone-play-label">MULAI NONTON</span>
+                    <span class="phone-play-label">PUTAR VIDEO</span>
                   </div>
                 </div>
                 <span class="phone-home-indicator"></span>
@@ -767,19 +785,43 @@ document.addEventListener("DOMContentLoaded", () => {
       reelsDirectLinkBtn.href = ARCHIVE_DIRECT_URL;
     }
 
+    function playInlineVideo() {
+      const inlineVideo = document.getElementById("inlinePhoneVideo");
+      const inlineIframe = document.getElementById("inlinePhoneIframe");
+      const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
+      const phonePosterImg = document.getElementById("phonePosterImg");
+
+      if (phoneScreenWrapper) {
+        phoneScreenWrapper.classList.add("is-playing");
+      }
+
+      // Deteksi WebKit Apple (iOS Safari / Mac Safari yang mendukung native MOV QuickTime)
+      const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) && !window.MSStream;
+
+      if (isApple && inlineVideo) {
+        if (phonePosterImg) phonePosterImg.style.display = "none";
+        inlineVideo.style.display = "block";
+        inlineVideo.play().catch(() => {
+          if (inlineIframe) {
+            inlineVideo.style.display = "none";
+            inlineIframe.style.display = "block";
+            inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
+          }
+        });
+      } else if (inlineIframe) {
+        if (phonePosterImg) phonePosterImg.style.display = "none";
+        if (inlineVideo) inlineVideo.style.display = "none";
+        inlineIframe.style.display = "block";
+        inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
+      }
+
+      // Musik utama (bgMusic) TETAP BERPUTAR sesuai permintaan user
+    }
+
     function openVerticalFullscreen() {
       if (!reelsModal) return;
 
-      // Hentikan musik latar jika sedang memutar
-      if (bgMusic && !bgMusic.paused) {
-        bgMusic.pause();
-        isMusicPlaying = false;
-        if (musicBtn) {
-          musicBtn.innerHTML = "🔇";
-          musicBtn.classList.remove("playing");
-          musicBtn.title = "Putar Suara Musik (Memories)";
-        }
-      }
+      // Musik utama (bgMusic) TETAP BERPUTAR, tidak di-pause
 
       // Set iframe src ke Internet Archive player saat modal dibuka
       if (reelsModalVideo) {
@@ -832,9 +874,17 @@ document.addEventListener("DOMContentLoaded", () => {
       el.onclick = (e) => { e.stopPropagation(); fn(e); };
     }
 
-    // Pasang event listener untuk tombol play / mulai video
-    bindTap(phonePlayOverlay, () => openVerticalFullscreen());
-    bindTap(phoneScreenWrapper, () => openVerticalFullscreen());
+    // Pasang event listener: klik di HP memutar video LANGSUNG di layar mockup
+    bindTap(phonePlayOverlay, (e) => {
+      playInlineVideo();
+    });
+    bindTap(phoneScreenWrapper, (e) => {
+      if (!phoneScreenWrapper.classList.contains("is-playing")) {
+        playInlineVideo();
+      }
+    });
+
+    // Tombol Layar Penuh di samping kanan HP tetap membuka modal
     bindTap(movieFullscreenBtn, () => openVerticalFullscreen());
 
     // Pasang event listener untuk tombol tutup video
@@ -1155,6 +1205,24 @@ document.addEventListener("DOMContentLoaded", () => {
     pageFlip.loadFromHTML(document.querySelectorAll(".page"));
 
     pageFlip.on("flip", () => {
+      const cur = pageFlip.getCurrentPageIndex();
+      const miniMovieIndex = pageFlip.getPageCount() - 2;
+      if (cur !== miniMovieIndex) {
+        const inlineVideo = document.getElementById("inlinePhoneVideo");
+        const inlineIframe = document.getElementById("inlinePhoneIframe");
+        const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
+        const phonePosterImg = document.getElementById("phonePosterImg");
+        if (inlineVideo && !inlineVideo.paused) {
+          try { inlineVideo.pause(); } catch(e) {}
+        }
+        if (inlineIframe && inlineIframe.src && inlineIframe.src !== "about:blank") {
+          try { inlineIframe.src = "about:blank"; } catch(e) {}
+        }
+        if (phoneScreenWrapper) phoneScreenWrapper.classList.remove("is-playing");
+        if (phonePosterImg) phonePosterImg.style.display = "block";
+        if (inlineVideo) inlineVideo.style.display = "none";
+        if (inlineIframe) inlineIframe.style.display = "none";
+      }
       playPageFlipSound();
       updateUIState();
     });
