@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   return `
                   <button type="button" class="division-crew-avatar-btn" data-division-crew-id="${m.id}" title="${m.name} (${isDivLeader ? 'Leader Divisi' : 'Team'} - Klik untuk profil lengkap)">
                     <div class="avatar-round-slot">
-                      <img src="assets/kru/kru${m.id}.png" alt="${m.name}" class="avatar-round-img" onerror="this.src='assets/images/LOGOKU.png';">
+                      <img src="assets/kru/kru${m.id}.png" alt="${m.name}" class="avatar-round-img" loading="lazy" onerror="this.src='assets/images/LOGOKU.png';">
                       <span class="division-avatar-click-badge">⚓ KLIK</span>
                     </div>
                     <span class="avatar-round-caption" title="${m.name}">${m.nickname || m.name}</span>
@@ -513,6 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <img src="assets/kru/kru${m.id}.png" 
                  alt="${m.name}" 
                  class="kru-img"
+                 loading="lazy"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <div class="wanted-avatar-placeholder" style="display: none;">
               <span class="kru-id-badge">#${m.id}</span>
@@ -1593,4 +1594,32 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   setTimeout(updateUIState, 150);
+
+  // ===== DISMISS LOADING SCREEN =====
+  const loadingScreen = document.getElementById('appLoadingScreen');
+  const loadingBar = document.getElementById('loadingBarFill');
+
+  function dismissLoader() {
+    if (!loadingScreen) return;
+    if (loadingBar) loadingBar.style.width = '100%';
+    setTimeout(() => {
+      loadingScreen.classList.add('fade-out');
+      setTimeout(() => {
+        if (loadingScreen.parentNode) loadingScreen.parentNode.removeChild(loadingScreen);
+      }, 700);
+    }, 300);
+  }
+
+  // Animasikan progress bar selama loading
+  if (loadingBar) {
+    let progress = 0;
+    const barInterval = setInterval(() => {
+      progress = Math.min(progress + (Math.random() * 18 + 5), 88);
+      loadingBar.style.width = progress + '%';
+      if (progress >= 88) clearInterval(barInterval);
+    }, 200);
+  }
+
+  // Tunggu DOM selesai render lalu dismiss
+  setTimeout(dismissLoader, 800);
 });

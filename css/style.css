@@ -5,6 +5,101 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
+/* ==========================================================================
+   LOADING SCREEN
+   ========================================================================== */
+#appLoadingScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #1e120c 0%, #0d0703 100%);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#appLoadingScreen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.loading-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+  animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.9)); transform: scale(1.05); }
+}
+
+.loading-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(18px, 5vw, 28px);
+  font-weight: 900;
+  color: #d4af37;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+}
+
+.loading-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(11px, 3vw, 14px);
+  color: rgba(247, 238, 216, 0.6);
+  letter-spacing: 0.06em;
+}
+
+.loading-bar-wrap {
+  width: min(280px, 80vw);
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #8c6d1f, #d4af37, #ffd966, #d4af37);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  animation: loadingBarShimmer 1.5s linear infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes loadingBarShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.loading-hint {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  color: rgba(247, 238, 216, 0.4);
+  letter-spacing: 0.04em;
+  animation: loadingDots 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingDots {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
 :root {
   --font-display: 'Cinzel Decorative', 'Cinzel', serif;
   --font-pirate: 'Pirata One', cursive;
