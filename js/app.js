@@ -13,6 +13,19 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Setup CSS custom properties awal untuk Safari iOS & browser mobile
+  function setPageUnitVars(w, h) {
+    document.documentElement.style.setProperty('--page-w', w + 'px');
+    document.documentElement.style.setProperty('--page-h', h + 'px');
+    document.documentElement.style.setProperty('--cqw', (w / 100) + 'px');
+    document.documentElement.style.setProperty('--cqh', (h / 100) + 'px');
+  }
+  const initW = window.innerWidth;
+  const initIsMobile = initW < 768;
+  const initPw = initIsMobile ? Math.min(Math.max(initW - 18, 280), 460) : 600;
+  const initPh = Math.round(initPw / 1.4144);
+  setPageUnitVars(initPw, initPh);
+
   // 1. Background Music Controller (assets/lagu/Memories.mp3)
   const bgMusic = document.getElementById("bgMusic");
   const musicBtn = document.getElementById("musicBtn");
@@ -745,8 +758,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const reelsModalBackdrop = document.getElementById("reelsModalBackdrop");
     const reelsModalCloseBtn = document.getElementById("reelsModalCloseBtn");
     const reelsModalVideo = document.getElementById("reelsModalVideoPlayer");
+    const reelsDirectLinkBtn = document.getElementById("reelsDirectLinkBtn");
 
-    const DRIVE_URL = "https://drive.google.com/file/d/1yoKIdjPJpx2mez1cOnVXxgAO-j-ULtd1/preview";
+    const ARCHIVE_EMBED_URL = (BOOK_CONFIG.miniMovie && BOOK_CONFIG.miniMovie.embedUrl) || "https://archive.org/embed/img-0243_202609";
+    const ARCHIVE_DIRECT_URL = (BOOK_CONFIG.miniMovie && BOOK_CONFIG.miniMovie.source) || "https://archive.org/download/img-0243_202609/IMG_0243.MOV";
+
+    if (reelsDirectLinkBtn) {
+      reelsDirectLinkBtn.href = ARCHIVE_DIRECT_URL;
+    }
 
     function openVerticalFullscreen() {
       if (!reelsModal) return;
@@ -762,12 +781,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Set iframe src saat modal dibuka (lazy load)
+      // Set iframe src ke Internet Archive player saat modal dibuka
       if (reelsModalVideo) {
         const currentSrc = reelsModalVideo.src || "";
         const needsLoad = !currentSrc || currentSrc === "about:blank" || currentSrc === location.href;
         if (needsLoad) {
-          reelsModalVideo.src = DRIVE_URL;
+          reelsModalVideo.src = ARCHIVE_EMBED_URL;
         }
       }
 
@@ -951,6 +970,9 @@ document.addEventListener("DOMContentLoaded", () => {
         pageWidth = Math.round(pageHeight * targetRatio);
       }
     }
+
+    // Sinkronisasi variabel dimensi ke CSS root agar dihitung presisi oleh Safari iOS
+    setPageUnitVars(pageWidth, pageHeight);
 
     return { pageWidth, pageHeight, isSingleSlide, mode };
   }
@@ -1316,6 +1338,15 @@ document.addEventListener("DOMContentLoaded", () => {
         buildAndMountPageFlip(currentPage);
       }
     }, 250);
+  });
+
+  window.addEventListener("orientationchange", () => {
+    setTimeout(() => {
+      lastWindowWidth = window.innerWidth;
+      lastWindowHeight = window.innerHeight;
+      const currentPage = pageFlip ? pageFlip.getCurrentPageIndex() : 0;
+      buildAndMountPageFlip(currentPage);
+    }, 200);
   });
 
   // 7. Modal Pesan & Kesan Interaktif

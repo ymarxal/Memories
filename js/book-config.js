@@ -482,7 +482,9 @@ const BOOK_CONFIG = {
   "miniMovie": {
     "title": "THE JOURNEY OF NAWALA",
     "subtitle": "Dokumenter Kilas Balik Magang Batch 18 Rumah BUMN Makassar",
-    "source": "assets/video/minimovie.MOV",
+    "source": "https://archive.org/download/img-0243_202609/IMG_0243.MOV",
+    "embedUrl": "https://archive.org/embed/img-0243_202609",
+    "archiveUrl": "https://archive.org/details/img-0243_202609",
     "poster": "assets/images/minimovie_poster.jpg",
     "duration": "Cinematic Edition",
     "synopsis": "Satu kapal, ribuan tawa, dan jutaan perjuangan. Rekam jejak petualangan 35 talenta muda mengarungi samudera pemberdayaan UMKM lokal bersama Rumah BUMN BRI Makassar."
