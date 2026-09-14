@@ -90,9 +90,30 @@
 .loading-hint {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 12px;
-  color: rgba(247, 238, 216, 0.4);
+  color: rgba(247, 238, 216, 0.6);
   letter-spacing: 0.04em;
   animation: loadingDots 1.5s ease-in-out infinite;
+}
+
+.loading-music-tip {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  color: #ffd700;
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+  padding: 4px 14px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.loading-music-tip:active,
+.loading-music-tip:hover {
+  background: rgba(212, 175, 55, 0.28);
+  opacity: 1;
 }
 
 @keyframes loadingDots {
