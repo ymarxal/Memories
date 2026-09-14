@@ -115,7 +115,7 @@ const BOOK_CONFIG = {
         {
           "name": "Yusuf Marcelino",
           "role": "Concept & Content Lead",
-          "highlight": "Mengarahkan identitas visual yearbook, konsep kreatif media, dan supervisi estetika maritim."
+          "highlight": "Mendesain kurang lebih 100+ desain untuk kebutuhan instagram official Rumah BUMN Makassar dan kebutuhan Internship serta management Rumah BUMN Makassar"
         },
         {
           "name": "Ahmad Arif Hidayat",
@@ -623,8 +623,8 @@ const BOOK_CONFIG = {
       "role": "Leader",
       "bounty": "360,000,000",
       "quote": "Kreativitas bukan sekadar estetika, melainkan solusi yang memberi dampak nyata.",
-      "memorable": "Empat bulan luar biasa bersama kru Nawala Batch 18, merancang konsep kreatif dan mengarahkan estetika visual yearbook.",
-      "achievement": "Mengarahkan identitas visual yearbook, konsep kreatif media, dan supervisi estetika maritim.",
+      "memorable": "Senang Sekali Bisa ketemu dan kenal dengan orang orang hebat di rumah bumn makassar. Terimakasih Terutama untuk teman teman intern batch 18 Nawala, Kakak kakak, Bapak/ibu UMKM, Ibu Ayu dan Bapak Didin Management Rumah BUMN BRI Makassar, dan semua orang yang saya temui di Rumah BUMN Makassar. Maaf Kalau selama bersama, saya masih banyak kurangnya, egois, kurang komunikatif, kurang membantu atau mungkin ada hal yang menyinggung.",
+      "achievement": "mendesain kurang lebih 100+ desain untuk kebutuhan instagram official Rumah BUMN Makassar dan kebutuhan Internship serta management Rumah BUMN Makassar",
       "messageBatch": "Senang Pernah Kenal Kalian Semua. Sukses Selalu untuk kita masing masing. Terimakasih Untuk semuanya🤍",
       "oneWord": "Kreasi"
     },
