@@ -762,9 +762,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Pastikan iframe memiliki URL video Google Drive
-      if (reelsModalVideo && (!reelsModalVideo.src || reelsModalVideo.src === "about:blank" || !reelsModalVideo.src.includes("drive.google.com"))) {
-        reelsModalVideo.src = DRIVE_URL;
+      // Set iframe src saat modal dibuka (lazy load) — tambah autoplay=1
+      if (reelsModalVideo) {
+        const currentSrc = reelsModalVideo.src || "";
+        const needsLoad = !currentSrc || currentSrc === "about:blank" || currentSrc === location.href;
+        if (needsLoad) {
+          reelsModalVideo.src = DRIVE_URL + "&autoplay=1";
+        }
       }
 
       reelsModal.classList.add("active");
@@ -775,23 +779,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeVerticalFullscreen() {
       if (!reelsModal) return;
 
-      // Hentikan suara/video Google Drive dengan me-reset iframe src
+      // Stop video: reset iframe src ke blank
       if (reelsModalVideo) {
-        try {
-          reelsModalVideo.src = "about:blank";
-        } catch (err) {}
+        try { reelsModalVideo.src = "about:blank"; } catch (err) {}
       }
 
       reelsModal.classList.remove("active");
       reelsModal.setAttribute("aria-hidden", "true");
       document.body.classList.remove("modal-open");
-
-      // Siapkan kembali URL video agar siap saat dibuka kembali
-      setTimeout(() => {
-        if (reelsModalVideo) {
-          reelsModalVideo.src = DRIVE_URL;
-        }
-      }, 350);
     }
 
     // Helper: pasang onclick DAN touchend untuk elemen agar berfungsi di HP
