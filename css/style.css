@@ -1,6 +1,6 @@
 /* ==========================================================================
-   LOGBOOK NAWALA - BATCH 18 RUMAH BUMN MAKASSAR
-   Theme: One Piece Pirate Logbook (Heyzine Flipbook Engine)
+   MEMORIES NAWALA - BATCH 18 RUMAH BUMN MAKASSAR
+   Theme: One Piece Pirate Yearbook (Heyzine Flipbook Engine)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=IM+Fell+English:ital@0;1&family=Pirata+One&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
@@ -2204,8 +2204,50 @@ body {
   font-family: var(--font-sans);
   font-size: 0.85rem;
   color: #26160c;
-  line-height: 1.45;
+  line-height: 1.55;
   margin: 0;
+}
+
+/* Kutipan dalam modal: teks utama dan sumber */
+.modal-quote-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: #3c2415;
+  line-height: 1.5;
+}
+
+.modal-quote-source {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8b1818;
+  letter-spacing: 0.3px;
+}
+
+/* Daftar bernomor dalam modal */
+.modal-numbered-list {
+  margin: 4px 0 0 0;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.modal-numbered-list li {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: #26160c;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.modal-para {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: #26160c;
+  line-height: 1.5;
+  margin: 2px 0;
 }
 
 /* Avatar Bulat Kru di Halaman Divisi */
@@ -3390,8 +3432,8 @@ body {
   justify-content: center;
   height: 94vh;
   max-height: 94vh;
-  width: auto;
-  max-width: calc(94vh * (9 / 16));
+  width: min(calc(94vh * (9 / 16)), 92vw);
+  max-width: min(calc(94vh * (9 / 16)), 92vw);
   aspect-ratio: 9 / 16;
   box-sizing: border-box;
 }
@@ -3401,7 +3443,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 20;
+  z-index: 25;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3439,24 +3481,25 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(139, 24, 24, 0.85);
+  background: #8b1818;
   border: 1.5px solid #d4af37;
   color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 8px 16px;
+  border-radius: 24px;
   font-family: var(--font-serif);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
   transition: all 0.2s ease;
+  z-index: 30;
 }
 
 .reels-modal-close-btn:hover {
-  background: #a61e1e;
+  background: #b32424;
   border-color: #ffd700;
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .reels-modal-screen-wrap {

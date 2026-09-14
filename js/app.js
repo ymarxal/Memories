@@ -679,26 +679,19 @@ document.addEventListener("DOMContentLoaded", () => {
               <!-- Frame Smartphone / Reels 9:16 Vertikal di Tengah Halaman -->
               <div class="reels-phone-mockup">
                 <div class="phone-speaker-notch"></div>
-                <div class="phone-screen" id="phoneScreenWrapper">
-                  <video id="nawalaMiniMoviePlayer" 
-                         class="reels-video" 
-                         controls 
-                         controlsList="nodownload nofullscreen"
-                         disablePictureInPicture
-                         preload="auto" 
-                         poster="${encodeURI(miniMovieData.poster)}"
-                         playsinline>
-                    <source src="${encodeURI(miniMovieData.source)}" type="video/mp4">
-                    <source src="${encodeURI(miniMovieData.source)}" type="video/quicktime">
-                    Browser Anda belum mendukung pemutaran video ini.
-                  </video>
+                <div class="phone-screen" id="phoneScreenWrapper" style="cursor: pointer;" title="Klik untuk memutar video">
+                  <img src="${encodeURI(miniMovieData.poster)}" 
+                       alt="${miniMovieData.title}" 
+                       class="reels-video"
+                       style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                       onerror="this.src='assets/images/LOGOKU.png';">
                   <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video">
                     <div class="phone-play-btn-circle">
                       <svg viewBox="0 0 24 24" width="32" height="32" fill="#ffffff">
                         <path d="M8 5v14l11-7z"/>
                       </svg>
                     </div>
-                    <span class="phone-play-label">PUTAR MOVIE</span>
+                    <span class="phone-play-label">MULAI NONTON</span>
                   </div>
                 </div>
                 <span class="phone-home-indicator"></span>
@@ -745,115 +738,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inisialisasi Kontrol Interaktif Mini-Movie Player & Cinema Dimming
   function initMiniMovieControls() {
-    const miniMoviePlayer = document.getElementById("nawalaMiniMoviePlayer");
     const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
     const phonePlayOverlay = document.getElementById("phonePlayOverlay");
     const movieFullscreenBtn = document.getElementById("movieFullscreenBtn");
-    const deskViewport = document.getElementById("deskViewport");
-
-    if (!miniMoviePlayer) return;
-
-    function setVideoNavigationLock(isLocked) {
-      window.isVideoPlaying = isLocked;
-      const prevBtn = document.getElementById("prevBtn");
-      const nextBtn = document.getElementById("nextBtn");
-      const sidePrev = document.getElementById("sidePrev");
-      const sideNext = document.getElementById("sideNext");
-
-      [prevBtn, nextBtn, sidePrev, sideNext].forEach(btn => {
-        if (!btn) return;
-        if (isLocked) {
-          btn.classList.add("nav-video-locked");
-          btn.setAttribute("aria-disabled", "true");
-        } else {
-          btn.classList.remove("nav-video-locked");
-          btn.removeAttribute("aria-disabled");
-        }
-      });
-    }
-
-    miniMoviePlayer.addEventListener("play", () => {
-      if (deskViewport) deskViewport.classList.add("cinema-dimmed");
-      if (phoneScreenWrapper) phoneScreenWrapper.classList.add("is-playing");
-      setVideoNavigationLock(true);
-      
-      if (bgMusic && !bgMusic.paused) {
-        bgMusic.pause();
-        isMusicPlaying = false;
-        if (musicBtn) {
-          musicBtn.textContent = "🔇";
-          musicBtn.classList.remove("playing");
-          musicBtn.title = "Putar Musik Latar";
-        }
-      }
-    });
-
-    miniMoviePlayer.addEventListener("pause", () => {
-      if (deskViewport) deskViewport.classList.remove("cinema-dimmed");
-      if (phoneScreenWrapper) phoneScreenWrapper.classList.remove("is-playing");
-      setVideoNavigationLock(false);
-    });
-
-    miniMoviePlayer.addEventListener("ended", () => {
-      if (deskViewport) deskViewport.classList.remove("cinema-dimmed");
-      if (phoneScreenWrapper) phoneScreenWrapper.classList.remove("is-playing");
-      setVideoNavigationLock(false);
-    });
-
-    if (phonePlayOverlay) {
-      phonePlayOverlay.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (miniMoviePlayer.paused) {
-          miniMoviePlayer.play().catch(() => {});
-        } else {
-          miniMoviePlayer.pause();
-        }
-      });
-    }
-
     const reelsModal = document.getElementById("reelsFullscreenModal");
     const reelsModalBackdrop = document.getElementById("reelsModalBackdrop");
     const reelsModalCloseBtn = document.getElementById("reelsModalCloseBtn");
     const reelsModalVideo = document.getElementById("reelsModalVideoPlayer");
 
+    const DRIVE_URL = "https://drive.google.com/file/d/1yoKIdjPJpx2mez1cOnVXxgAO-j-ULtd1/preview";
+
     function openVerticalFullscreen() {
-      if (!reelsModal || !reelsModalVideo) return;
-      const currentPos = miniMoviePlayer.currentTime || 0;
-      miniMoviePlayer.pause();
+      if (!reelsModal) return;
 
-      reelsModalVideo.currentTime = currentPos;
-      reelsModal.classList.add("active");
-      reelsModal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("modal-open");
-
+      // Hentikan musik latar jika sedang memutar
       if (bgMusic && !bgMusic.paused) {
         bgMusic.pause();
         isMusicPlaying = false;
-        if (musicBtn) musicBtn.textContent = "🔇";
+        if (musicBtn) {
+          musicBtn.innerHTML = "🔇";
+          musicBtn.classList.remove("playing");
+          musicBtn.title = "Putar Suara Musik (Memories)";
+        }
       }
 
-      reelsModalVideo.play().catch(() => {});
+      // Pastikan iframe memiliki URL video Google Drive
+      if (reelsModalVideo && (!reelsModalVideo.src || reelsModalVideo.src === "about:blank" || !reelsModalVideo.src.includes("drive.google.com"))) {
+        reelsModalVideo.src = DRIVE_URL;
+      }
+
+      reelsModal.classList.add("active");
+      reelsModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
     }
 
     function closeVerticalFullscreen() {
-      if (!reelsModal || !reelsModalVideo) return;
-      const currentPos = reelsModalVideo.currentTime || 0;
-      const wasPlaying = !reelsModalVideo.paused;
-      reelsModalVideo.pause();
+      if (!reelsModal) return;
 
-      miniMoviePlayer.currentTime = currentPos;
+      // Hentikan suara/video Google Drive dengan me-reset iframe src
+      if (reelsModalVideo) {
+        try {
+          reelsModalVideo.src = "about:blank";
+        } catch (err) {}
+      }
+
       reelsModal.classList.remove("active");
       reelsModal.setAttribute("aria-hidden", "true");
       document.body.classList.remove("modal-open");
 
-      if (wasPlaying) {
-        miniMoviePlayer.play().catch(() => {});
-      }
+      // Siapkan kembali URL video agar siap saat dibuka kembali
+      setTimeout(() => {
+        if (reelsModalVideo) {
+          reelsModalVideo.src = DRIVE_URL;
+        }
+      }, 350);
     }
 
-    if (movieFullscreenBtn) movieFullscreenBtn.onclick = (e) => { e.stopPropagation(); openVerticalFullscreen(); };
-    if (reelsModalCloseBtn) reelsModalCloseBtn.onclick = (e) => { e.stopPropagation(); closeVerticalFullscreen(); };
-    if (reelsModalBackdrop) reelsModalBackdrop.onclick = closeVerticalFullscreen;
+    // Helper: pasang onclick DAN touchend untuk elemen agar berfungsi di HP
+    function bindTap(el, fn) {
+      if (!el) return;
+      let _tx = 0, _ty = 0;
+      el.addEventListener("touchstart", (e) => {
+        if (e.touches && e.touches.length === 1) {
+          _tx = e.touches[0].clientX;
+          _ty = e.touches[0].clientY;
+        }
+      }, { passive: true });
+      el.addEventListener("touchend", (e) => {
+        if (e.changedTouches && e.changedTouches.length === 1) {
+          const dx = Math.abs(e.changedTouches[0].clientX - _tx);
+          const dy = Math.abs(e.changedTouches[0].clientY - _ty);
+          if (dx < 15 && dy < 15) {
+            e.preventDefault();
+            e.stopPropagation();
+            fn(e);
+          }
+        }
+      }, { passive: false });
+      el.onclick = (e) => { e.stopPropagation(); fn(e); };
+    }
+
+    // Pasang event listener untuk tombol play / mulai video
+    bindTap(phonePlayOverlay, () => openVerticalFullscreen());
+    bindTap(phoneScreenWrapper, () => openVerticalFullscreen());
+    bindTap(movieFullscreenBtn, () => openVerticalFullscreen());
+
+    // Pasang event listener untuk tombol tutup video
+    bindTap(reelsModalCloseBtn, () => closeVerticalFullscreen());
+    bindTap(reelsModalBackdrop, () => closeVerticalFullscreen());
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && reelsModal && reelsModal.classList.contains("active")) {
@@ -1360,6 +1332,62 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCrewDivision = document.getElementById("modalCrewDivision");
   const modalCrewQuote = document.getElementById("modalCrewQuote");
 
+  /**
+   * Format teks modal menjadi HTML yang rapi:
+   * - Pola bernomor (1. 2. 3.) => <ol> list
+   * - Kutipan dengan sumber "teks — Sumber" => kutipan + sumber di bawah
+   * - Newline dijaga
+   */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function formatModalText(raw, wrapQuote) {
+    if (!raw || String(raw).trim() === '' || raw === '-') return '<span>-</span>';
+    let text = String(raw).trim();
+
+    if (wrapQuote) {
+      // Cek apakah ada atribusi " - Sumber" atau " — Sumber" di akhir baris
+      const srcMatch = text.match(/\s[-\u2014]\s*([^\n\u201d"]{2,80})\s*$/);
+      if (srcMatch) {
+        const body = text.slice(0, srcMatch.index).trim().replace(/^[\u201c"]+|[\u201d"]+$/g, '');
+        const src = srcMatch[1].trim();
+        return `<span class="modal-quote-text">\u201c${escapeHtml(body)}\u201d</span><br><span class="modal-quote-source">\u2014 ${escapeHtml(src)}</span>`;
+      }
+      const clean = text.replace(/^[\u201c"]+|[\u201d"]+$/g, '');
+      return `<span class="modal-quote-text">\u201c${escapeHtml(clean)}\u201d</span>`;
+    }
+
+    // Deteksi pola bernomor di awal baris
+    if (/(?:^|\n)\s*\d+\.\s+/.test(text)) {
+      const lines = text.split(/\n+/);
+      let html = '';
+      let inList = false;
+      for (const line of lines) {
+        const m = line.match(/^\s*(\d+)\.\s+(.+)$/);
+        if (m) {
+          if (!inList) { html += '<ol class="modal-numbered-list">'; inList = true; }
+          html += `<li>${escapeHtml(m[2])}</li>`;
+        } else if (line.trim()) {
+          if (inList) { html += '</ol>'; inList = false; }
+          html += `<p class="modal-para">${escapeHtml(line.trim())}</p>`;
+        }
+      }
+      if (inList) html += '</ol>';
+      return html;
+    }
+
+    // Teks biasa: jaga newline
+    return escapeHtml(text).replace(/\n/g, '<br>');
+  }
+
+  function setModalHtml(el, html) {
+    if (el) el.innerHTML = html;
+  }
+
   function openQuoteModal(crewId) {
     if (!quoteModal) return;
     const crew = (BOOK_CONFIG.crewMembers || []).find(c => c.id === parseInt(crewId, 10));
@@ -1394,7 +1422,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalCrewDivision) modalCrewDivision.textContent = crew.division;
     
     // Flyer Bounty: MURNI MENAMPILKAN PESAN UNTUK BATCH 18
-    if (modalCrewQuote) modalCrewQuote.textContent = crew.messageBatch ? `“${crew.messageBatch}”` : "-";
+    setModalHtml(modalCrewQuote, formatModalText(crew.messageBatch, false));
 
     quoteModal.classList.add("active");
     quoteModal.setAttribute("aria-hidden", "false");
@@ -1458,19 +1486,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 1. Quote Pribadi
-    if (modalDetailQuote) {
-      modalDetailQuote.textContent = crew.quote ? `“${crew.quote}”` : "-";
-    }
+    setModalHtml(modalDetailQuote, formatModalText(crew.quote, true));
 
     // 2. Kesan Selama Magang (Hal Paling Berkesan)
-    if (modalDetailMemorable) {
-      modalDetailMemorable.textContent = crew.memorable ? crew.memorable : "-";
-    }
+    setModalHtml(modalDetailMemorable, formatModalText(crew.memorable, false));
 
     // 3. Pencapaian Selama Magang
-    if (modalDetailAchievement) {
-      modalDetailAchievement.textContent = crew.achievement || fallbackAchievement;
-    }
+    setModalHtml(modalDetailAchievement, formatModalText(crew.achievement || fallbackAchievement, false));
 
     quoteModal.classList.add("active");
     quoteModal.setAttribute("aria-hidden", "false");
@@ -1513,11 +1535,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalCrewRole) modalCrewRole.textContent = `★ INTERN OF THE MONTH (${m.monthName}) ★`;
     if (modalCrewName) modalCrewName.textContent = r.name;
     if (modalCrewDivision) modalCrewDivision.textContent = r.division;
-    if (modalDetailQuote) modalDetailQuote.textContent = `“${r.quote}”`;
+    if (modalDetailQuote) setModalHtml(modalDetailQuote, formatModalText(r.quote, true));
     if (modalDetailMemorable) {
       const labelMemorable = modalDetailMemorable.previousElementSibling;
       if (labelMemorable) labelMemorable.textContent = "🌊 Pesan & Kesan:";
-      modalDetailMemorable.textContent = `“${r.message}”`;
+      setModalHtml(modalDetailMemorable, formatModalText(r.message, false));
     }
     // Sembunyikan blok capaian ketiga di mode IOTM
     const achieveBlock = modalDetailAchievement ? modalDetailAchievement.closest(".modal-detail-block") : null;
@@ -1550,42 +1572,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Delegasi event klik pada seluruh flyer bounty, avatar bulat divisi, dan kotak IOTM
-  bookElement.addEventListener("click", (e) => {
-    // 1. Klik pada seluruh Flyer Bounty / Poster Buronan (Buka pesan untuk Batch 18 lengkap)
-    const wantedPoster = e.target.closest(".wanted-poster");
+  // Delegasi event klik DAN touch (mobile) untuk flyer bounty, avatar divisi, dan IOTM
+  let _bookTouchX = 0, _bookTouchY = 0;
+
+  function handleBookInteraction(target) {
+    // 1. Flyer Bounty / Poster Buronan
+    const wantedPoster = target.closest(".wanted-poster");
     if (wantedPoster) {
-      e.stopPropagation();
-      const crewId = wantedPoster.getAttribute("data-crew-id") || wantedPoster.querySelector("[data-quote-id]")?.getAttribute("data-quote-id");
-      if (crewId) {
-        openQuoteModal(crewId);
-      }
-      return;
+      const crewId = wantedPoster.getAttribute("data-crew-id") ||
+                     wantedPoster.querySelector("[data-quote-id]")?.getAttribute("data-quote-id");
+      if (crewId) openQuoteModal(crewId);
+      return true;
     }
-
-    // 2. Klik pada avatar bulat di halaman divisi (Quote pribadi, hal berkesan, capaian)
-    const divAvatarBtn = e.target.closest(".division-crew-avatar-btn");
+    // 2. Avatar bulat di halaman divisi
+    const divAvatarBtn = target.closest(".division-crew-avatar-btn");
     if (divAvatarBtn) {
-      e.stopPropagation();
       const crewId = divAvatarBtn.getAttribute("data-division-crew-id");
-      if (crewId) {
-        openDivisionCrewModal(crewId);
-      }
-      return;
+      if (crewId) openDivisionCrewModal(crewId);
+      return true;
     }
-
-    // 3. Klik pada kotak peraih Intern of the Month (seluruh card atau foto avatar untuk buka quote + pesan/kesan)
-    const iotmCard = e.target.closest(".iotm-card-single") || e.target.closest(".iotm-avatar-btn");
+    // 3. Intern of the Month card
+    const iotmCard = target.closest(".iotm-card-single") || target.closest(".iotm-avatar-btn");
     if (iotmCard) {
-      e.stopPropagation();
       const monthIdx = parseInt(iotmCard.getAttribute("data-iotm-month"), 10);
       const rIdx = parseInt(iotmCard.getAttribute("data-iotm-idx"), 10);
-      if (!isNaN(monthIdx) && !isNaN(rIdx)) {
-        openIotmModal(monthIdx, rIdx);
-      }
-      return;
+      if (!isNaN(monthIdx) && !isNaN(rIdx)) openIotmModal(monthIdx, rIdx);
+      return true;
     }
+    return false;
+  }
+
+  bookElement.addEventListener("click", (e) => {
+    if (handleBookInteraction(e.target)) e.stopPropagation();
   });
+
+  // Touch handler khusus mobile — deteksi tap pendek (bukan swipe/drag)
+  bookElement.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length === 1) {
+      _bookTouchX = e.touches[0].clientX;
+      _bookTouchY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  bookElement.addEventListener("touchend", (e) => {
+    if (e.changedTouches && e.changedTouches.length === 1) {
+      const dx = Math.abs(e.changedTouches[0].clientX - _bookTouchX);
+      const dy = Math.abs(e.changedTouches[0].clientY - _bookTouchY);
+      // Hanya proses sebagai tap bukan swipe (gerakan < 15px)
+      if (dx < 15 && dy < 15) {
+        const el = document.elementFromPoint(
+          e.changedTouches[0].clientX,
+          e.changedTouches[0].clientY
+        );
+        if (el && handleBookInteraction(el)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    }
+  }, { passive: false });
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && quoteModal && quoteModal.classList.contains("active")) {
@@ -1610,44 +1655,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
-  // Animasikan progress bar selama loading
-  let barInterval;
-  if (loadingBar) {
-    let progress = 0;
-    barInterval = setInterval(() => {
-      progress = Math.min(progress + (Math.random() * 18 + 5), 88);
-      loadingBar.style.width = progress + '%';
-      if (progress >= 88) clearInterval(barInterval);
-    }, 200);
-  }
-
-  // Tunggu gambar-gambar slide depan terdownload
-  const criticalImages = [
-    "assets/images/sampul%20fix.png",
-    "assets/images/slide2.png",
-    "assets/images/background 1.png"
-  ];
-  
-  let loadedCount = 0;
+  // Dua kondisi untuk dismiss: bar >= 50% DAN musik siap
   let isDismissed = false;
-  
-  function checkAllLoaded() {
-    loadedCount++;
-    if (loadedCount >= criticalImages.length && !isDismissed) {
+  let barReachedHalf = false;
+  let musicReady = false;
+
+  function tryDismiss() {
+    if (!isDismissed && barReachedHalf && musicReady) {
       isDismissed = true;
       if (barInterval) clearInterval(barInterval);
       dismissLoader();
     }
   }
 
-  criticalImages.forEach(src => {
-    const img = new Image();
-    img.onload = checkAllLoaded;
-    img.onerror = checkAllLoaded; // Lanjut walau error agar tidak stuck
-    img.src = src;
-  });
+  // Animasikan progress bar
+  let barInterval;
+  let currentProgress = 0;
+  if (loadingBar) {
+    barInterval = setInterval(() => {
+      currentProgress = Math.min(currentProgress + (Math.random() * 12 + 4), 92);
+      loadingBar.style.width = currentProgress + '%';
+      if (currentProgress >= 50 && !barReachedHalf) {
+        barReachedHalf = true;
+        tryDismiss();
+      }
+      if (currentProgress >= 92) clearInterval(barInterval);
+    }, 180);
+  } else {
+    barReachedHalf = true;
+  }
 
-  // Fallback timeout 7 detik kalau koneksi lambat
+  // Cek apakah musik sudah siap
+  if (bgMusic) {
+    if (bgMusic.readyState >= 3) {
+      // Sudah cukup ter-buffer
+      musicReady = true;
+    } else {
+      bgMusic.addEventListener('canplay', () => {
+        musicReady = true;
+        tryDismiss();
+      }, { once: true });
+      bgMusic.addEventListener('error', () => {
+        // Musik error, tetap lanjut
+        musicReady = true;
+        tryDismiss();
+      }, { once: true });
+    }
+  } else {
+    musicReady = true;
+  }
+
+  // Fallback: 7 detik kalau kondisi tak terpenuhi
   setTimeout(() => {
     if (!isDismissed) {
       isDismissed = true;
@@ -1656,3 +1714,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, 7000);
 });
+

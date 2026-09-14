@@ -980,6 +980,7 @@ const BOOK_CONFIG = {
     }
   ],
   "userCustomPages": [
+    "assets/images/one.png",
     "assets/images/halaman terakhir 1.png",
     "assets/images/halaman terakhir 2.png",
     "assets/images/halaman terakhir 3.png",
