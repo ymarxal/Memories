@@ -762,12 +762,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Set iframe src saat modal dibuka (lazy load) — tambah autoplay=1
+      // Set iframe src saat modal dibuka (lazy load)
       if (reelsModalVideo) {
         const currentSrc = reelsModalVideo.src || "";
         const needsLoad = !currentSrc || currentSrc === "about:blank" || currentSrc === location.href;
         if (needsLoad) {
-          reelsModalVideo.src = DRIVE_URL + "&autoplay=1";
+          reelsModalVideo.src = DRIVE_URL;
         }
       }
 

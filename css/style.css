@@ -940,7 +940,8 @@ body {
   color: #721616;
   line-height: 1.38;
   margin: 0;
-  text-align: left;
+  text-align: justify;
+  text-justify: inter-word;
   letter-spacing: 0.05px;
 }
 
@@ -1301,6 +1302,8 @@ body {
   margin: 0;
   padding: 0;
   overflow: visible;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .division-achievements-wrap {
@@ -4628,6 +4631,8 @@ video:-webkit-full-screen,
     font-size: 2.6cqh !important;
     line-height: 1.42 !important;
     font-weight: 500 !important;
+    text-align: justify !important;
+    text-justify: inter-word !important;
   }
   .division-crew-avatar-btn[data-division-crew-id="2"] .avatar-round-img {
     object-position: center 12% !important;
