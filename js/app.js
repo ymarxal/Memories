@@ -1611,15 +1611,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Animasikan progress bar selama loading
+  let barInterval;
   if (loadingBar) {
     let progress = 0;
-    const barInterval = setInterval(() => {
+    barInterval = setInterval(() => {
       progress = Math.min(progress + (Math.random() * 18 + 5), 88);
       loadingBar.style.width = progress + '%';
       if (progress >= 88) clearInterval(barInterval);
     }, 200);
   }
 
-  // Tunggu DOM selesai render lalu dismiss
-  setTimeout(dismissLoader, 800);
+  // Tunggu gambar-gambar slide depan terdownload
+  const criticalImages = [
+    "assets/images/sampul%20fix.png",
+    "assets/images/slide2.png",
+    "assets/images/background 1.png"
+  ];
+  
+  let loadedCount = 0;
+  let isDismissed = false;
+  
+  function checkAllLoaded() {
+    loadedCount++;
+    if (loadedCount >= criticalImages.length && !isDismissed) {
+      isDismissed = true;
+      if (barInterval) clearInterval(barInterval);
+      dismissLoader();
+    }
+  }
+
+  criticalImages.forEach(src => {
+    const img = new Image();
+    img.onload = checkAllLoaded;
+    img.onerror = checkAllLoaded; // Lanjut walau error agar tidak stuck
+    img.src = src;
+  });
+
+  // Fallback timeout 7 detik kalau koneksi lambat
+  setTimeout(() => {
+    if (!isDismissed) {
+      isDismissed = true;
+      if (barInterval) clearInterval(barInterval);
+      dismissLoader();
+    }
+  }, 7000);
 });
