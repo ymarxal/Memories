@@ -156,7 +156,7 @@ const BOOK_CONFIG = {
     {
       "id": "sosial_media_strategist",
       "name": "Social Media Strategist",
-      "photo": "assets/images/sms.jpg",
+      "photo": "assets/images/sms.jpg?v=17.0",
       "photoPosition": "center 60%",
       "memberCount": 3,
       "memberIds": [
@@ -451,7 +451,7 @@ const BOOK_CONFIG = {
           {
             "name": "Fatihah Nurislami Ramadhani",
             "division": "Social Media Strategist",
-            "photo": "assets/kru/kru34.png?v=2",
+            "photo": "assets/kru/kru34.png?v=17.0",
             "quote": "No small effort is ever waste",
             "message": "Started with 0% internship experience. Left RB with 1001x experience, lessons, and memories"
           }
@@ -952,7 +952,7 @@ const BOOK_CONFIG = {
     },
     {
       "id": 34,
-      "photo": "assets/kru/kru34.png?v=2",
+      "photo": "assets/kru/kru34.png?v=17.0",
       "name": "Fatihah Nurislami Ramadhani",
       "nickname": "Fatihah",
       "division": "Social Media Strategist",

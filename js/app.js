@@ -26,6 +26,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const initPh = Math.round(initPw / 1.4144);
   setPageUnitVars(initPw, initPh);
 
+  // Helper universal untuk foto profil kru (prioritaskan m.photo dengan cache-buster otomatis)
+  function getCrewPhoto(m) {
+    if (!m) return "assets/images/LOGOKU.png";
+    const member = (typeof m === "object") ? m : ((BOOK_CONFIG.crewMembers || []).find(c => c.id === m) || { id: m });
+    let photoUrl = member.photo || `assets/kru/kru${member.id}.png`;
+    if (!photoUrl.includes("?")) {
+      photoUrl += "?v=17.0";
+    }
+    return encodeURI(photoUrl);
+  }
+
   // 1. Background Music Controller (assets/lagu/Memories.mp3)
   const bgMusic = document.getElementById("bgMusic");
   const musicBtn = document.getElementById("musicBtn");
@@ -297,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   return `
                   <button type="button" class="division-crew-avatar-btn" data-division-crew-id="${m.id}" title="${m.name} (${isDivLeader ? 'Leader Divisi' : 'Team'} - Klik untuk profil lengkap)">
                     <div class="avatar-round-slot">
-                      <img src="assets/kru/kru${m.id}.png" alt="${m.name}" class="avatar-round-img" loading="lazy" onerror="this.src='assets/images/LOGOKU.png';">
+                      <img src="${getCrewPhoto(m)}" alt="${m.name}" class="avatar-round-img" loading="lazy" onerror="this.src='assets/images/LOGOKU.png';">
                       <span class="division-avatar-click-badge">⚓ KLIK</span>
                     </div>
                     <span class="avatar-round-caption" title="${m.name}">${m.nickname || m.name}</span>
@@ -514,7 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="wanted-header">INTERNSHIP</span>
           
           <div class="wanted-photo-slot">
-            <img src="assets/kru/kru${m.id}.png" 
+            <img src="${getCrewPhoto(m)}" 
                  alt="${m.name}" 
                  class="kru-img"
                  loading="lazy"
@@ -566,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="wanted-header">INTERNSHIP</span>
             
             <div class="wanted-photo-slot">
-              <img src="assets/kru/kru${m.id}.png" 
+              <img src="${getCrewPhoto(m)}" 
                    alt="${m.name}" 
                    class="kru-img"
                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -1474,7 +1485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalCrewAvatar) {
       modalCrewAvatar.classList.toggle("avatar-leader-batch", isLeaderBatch);
       modalCrewAvatar.setAttribute("data-crew-id", crew.id);
-      modalCrewAvatar.src = `assets/kru/kru${crew.id}.png`;
+      modalCrewAvatar.src = getCrewPhoto(crew);
       modalCrewAvatar.onerror = function() {
         this.src = "assets/images/LOGOKU.png";
       };
@@ -1529,7 +1540,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalCrewAvatar) {
       modalCrewAvatar.classList.remove("avatar-leader-batch");
       modalCrewAvatar.setAttribute("data-crew-id", crew.id);
-      modalCrewAvatar.src = `assets/kru/kru${crew.id}.png`;
+      modalCrewAvatar.src = getCrewPhoto(crew);
       modalCrewAvatar.onerror = function() {
         this.src = "assets/images/LOGOKU.png";
       };
@@ -1738,7 +1749,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Tambahkan foto seluruh kru 1 s/d 35 ke antrean preloader
   for (let i = 1; i <= 35; i++) {
-    CRITICAL_IMAGES.push(`assets/kru/kru${i}.png`);
+    CRITICAL_IMAGES.push(getCrewPhoto(i));
   }
 
   // Preload aset di background
