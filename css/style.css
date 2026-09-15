@@ -35,8 +35,8 @@
 }
 
 .loading-logo {
-  width: 130px;
-  height: 130px;
+  width: 180px;
+  height: 180px;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
   animation: loadingPulse 2s ease-in-out infinite;
