@@ -451,7 +451,7 @@ const BOOK_CONFIG = {
           {
             "name": "Fatihah Nurislami Ramadhani",
             "division": "Social Media Strategist",
-            "photo": "assets/kru/kru34.png",
+            "photo": "assets/kru/kru34.png?v=2",
             "quote": "No small effort is ever waste",
             "message": "Started with 0% internship experience. Left RB with 1001x experience, lessons, and memories"
           }
@@ -954,7 +954,7 @@ const BOOK_CONFIG = {
     },
     {
       "id": 34,
-      "photo": "assets/kru/kru34.png",
+      "photo": "assets/kru/kru34.png?v=2",
       "name": "Fatihah Nurislami Ramadhani",
       "nickname": "Fatihah",
       "division": "Social Media Strategist",
