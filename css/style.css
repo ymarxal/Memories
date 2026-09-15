@@ -4640,20 +4640,20 @@ video:-webkit-full-screen,
     font-size: calc(2.8 * var(--cqh)) !important;
   }
   .division-body-card {
-    padding: calc(1.0 * var(--cqh)) calc(1.8 * var(--cqw)) !important;
+    padding: calc(1.2 * var(--cqh)) calc(2.0 * var(--cqw)) !important;
     flex: 1 1 auto !important;
     min-height: 0 !important;
     border-radius: 10px !important;
-    gap: calc(0.6 * var(--cqh)) !important;
+    gap: calc(0.8 * var(--cqh)) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
   }
   .division-photo-row {
     gap: calc(2.5 * var(--cqw)) !important;
-    margin-bottom: calc(0.3 * var(--cqh)) !important;
-    height: calc(27 * var(--cqh)) !important;
-    min-height: calc(27 * var(--cqh)) !important;
+    margin-bottom: calc(0.4 * var(--cqh)) !important;
+    height: calc(38 * var(--cqh)) !important;
+    min-height: calc(38 * var(--cqh)) !important;
   }
   .division-photo-frame {
     width: 45% !important;
