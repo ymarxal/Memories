@@ -5733,6 +5733,10 @@ video:-webkit-full-screen,
     bottom: 4px !important;
     padding: 2px 8px !important;
     gap: 4px !important;
+    /* Safe area untuk notch di landscape (iPhone X, 12, 13, dll) */
+    left: max(50%, env(safe-area-inset-left, 0px)) !important;
+    padding-left: max(8px, env(safe-area-inset-left, 8px)) !important;
+    padding-right: max(8px, env(safe-area-inset-right, 8px)) !important;
   }
 
   .toolbar-btn {
@@ -5752,4 +5756,89 @@ video:-webkit-full-screen,
 
 #deskViewport.fullscreen-focus .side-arrow:hover {
   opacity: 1;
+}
+
+/* ==========================================================================
+   TABLET BREAKPOINT (768px – 1023px): iPad, Tablet Android, Surface
+   Buku tampil lebih besar dan proporsional di layar medium
+   ========================================================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Header: Sedikit lebih lebar dari mobile */
+  .top-nav-bar {
+    top: max(14px, env(safe-area-inset-top, 14px)) !important;
+    padding: 8px 28px !important;
+    max-width: min(80vw, 520px) !important;
+    border-radius: 30px !important;
+  }
+
+  .top-nav-bar .top-logo-img {
+    height: 34px !important;
+  }
+
+  .top-nav-bar .main-title {
+    font-size: 1.05rem !important;
+    letter-spacing: 1.5px !important;
+  }
+
+  .top-nav-bar .sub-title {
+    font-size: 0.60rem !important;
+  }
+
+  /* Flipbook Container: Lebih besar dari HP, lebih kecil dari desktop */
+  .flipbook-container {
+    height: calc(100vh - 130px) !important;
+    height: calc(100dvh - 130px) !important;
+    max-height: calc(100vh - 125px) !important;
+    max-height: calc(100dvh - 125px) !important;
+    margin-top: 10px !important;
+    margin-bottom: 28px !important;
+    padding: 0 8px !important;
+  }
+
+  /* Sembunyikan panah samping — gunakan toolbar bawah */
+  .side-arrow {
+    display: none !important;
+  }
+
+  /* Toolbar bawah: Ukuran sedang antara HP dan desktop */
+  .flipbook-toolbar {
+    position: fixed !important;
+    bottom: max(18px, env(safe-area-inset-bottom, 18px)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 999999 !important;
+    padding: 7px 18px !important;
+    gap: 10px !important;
+    border-radius: 32px !important;
+    background: rgba(14, 9, 6, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 2px solid rgba(212, 175, 55, 0.85) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.92), 0 0 20px rgba(212, 175, 55, 0.4) !important;
+  }
+
+  .toolbar-btn {
+    min-width: 46px !important;
+    min-height: 46px !important;
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 1.2rem !important;
+  }
+
+  .page-indicator-pill {
+    padding: 6px 18px !important;
+    font-size: 0.82rem !important;
+    min-width: 104px !important;
+  }
+
+  /* Zoom button tampil di tablet (berbeda dari HP) */
+  #zoomBtn,
+  .zoom-btn {
+    display: flex !important;
+  }
+
+  /* Modal di tablet: sedikit lebih lebar */
+  .quote-modal-card {
+    max-width: 520px !important;
+  }
 }
