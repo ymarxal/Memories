@@ -190,22 +190,22 @@ const BOOK_CONFIG = {
       "photoPosition": "center 52%",
       "memberCount": 4,
       "memberIds": [
-        1,
         9,
+        1,
         30,
         31
       ],
       "description": "Merancang dan memproduksi konten audio-visual dari pra-produksi, skrip, shooting, hingga editing. Mendokumentasikan kegiatan dan memperkuat branding Rumah BUMN serta mitra binaan.",
       "achievements": [
         {
-          "name": "Muhammad Qhaira Anwar",
-          "role": "Leader Batch & Producer",
-          "highlight": "saya belajar ternyata sebanyak itu teknik dan cara editing yang bagus dan unik unik yang dapat di pakai sesuai kebutuhan di lapangan"
-        },
-        {
           "name": "Aqshara Magfirah",
           "role": "Videographer & Editor",
           "highlight": "survive,  sakit, handle coprocuu"
+        },
+        {
+          "name": "Muhammad Qhaira Anwar",
+          "role": "Leader Batch & Producer",
+          "highlight": "saya belajar ternyata sebanyak itu teknik dan cara editing yang bagus dan unik unik yang dapat di pakai sesuai kebutuhan di lapangan"
         },
         {
           "name": "Muh Fahri Zahi Achmad",
