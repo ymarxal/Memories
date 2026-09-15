@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const member = (typeof m === "object") ? m : ((BOOK_CONFIG.crewMembers || []).find(c => c.id === m) || { id: m });
     let photoUrl = member.photo || `assets/kru/kru${member.id}.png`;
     if (!photoUrl.includes("?")) {
-      photoUrl += "?v=17.0";
+      photoUrl += "?v=20.0";
     }
     return encodeURI(photoUrl);
   }
