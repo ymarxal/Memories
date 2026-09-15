@@ -710,9 +710,10 @@ document.addEventListener("DOMContentLoaded", () => {
                          playsinline
                          webkit-playsinline
                          controls
-                         preload="none"
+                         preload="metadata"
+                         poster="${encodeURI(miniMovieData.poster)}"
                          style="width: 100%; height: 100%; object-fit: cover; background: #000; display: none; position: absolute; inset: 0; z-index: 2;">
-                    <source src="${encodeURI(miniMovieData.source)}" type="video/quicktime">
+                    <source src="${encodeURI(miniMovieData.source)}" type="video/mp4">
                   </video>
                   <iframe id="inlinePhoneIframe"
                           class="reels-video"
@@ -801,22 +802,22 @@ document.addEventListener("DOMContentLoaded", () => {
         phoneScreenWrapper.classList.add("is-playing");
       }
 
-      // Deteksi WebKit Apple (iOS Safari / Mac Safari yang mendukung native MOV QuickTime)
-      const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) && !window.MSStream;
-
-      if (isApple && inlineVideo) {
+      if (inlineVideo) {
         if (phonePosterImg) phonePosterImg.style.display = "none";
         inlineVideo.style.display = "block";
-        inlineVideo.play().catch(() => {
-          if (inlineIframe) {
-            inlineVideo.style.display = "none";
-            inlineIframe.style.display = "block";
-            inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
-          }
-        });
+        const playPromise = inlineVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn("Autoplay inline video dicegah browser, coba iframe:", err);
+            if (inlineIframe) {
+              inlineVideo.style.display = "none";
+              inlineIframe.style.display = "block";
+              inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
+            }
+          });
+        }
       } else if (inlineIframe) {
         if (phonePosterImg) phonePosterImg.style.display = "none";
-        if (inlineVideo) inlineVideo.style.display = "none";
         inlineIframe.style.display = "block";
         inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
       }
@@ -827,14 +828,21 @@ document.addEventListener("DOMContentLoaded", () => {
     function openVerticalFullscreen() {
       if (!reelsModal) return;
 
-      // Musik utama (bgMusic) TETAP BERPUTAR, tidak di-pause
+      const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
+      const reelsModalIframe = document.getElementById("reelsModalVideoPlayer");
 
-      // Set iframe src ke Internet Archive player saat modal dibuka
-      if (reelsModalVideo) {
-        const currentSrc = reelsModalVideo.src || "";
+      if (reelsModalVideoTag) {
+        reelsModalVideoTag.style.display = "block";
+        if (reelsModalIframe) reelsModalIframe.style.display = "none";
+        try {
+          reelsModalVideoTag.currentTime = 0;
+          reelsModalVideoTag.play().catch(() => {});
+        } catch (e) {}
+      } else if (reelsModalIframe) {
+        const currentSrc = reelsModalIframe.src || "";
         const needsLoad = !currentSrc || currentSrc === "about:blank" || currentSrc === location.href;
         if (needsLoad) {
-          reelsModalVideo.src = ARCHIVE_EMBED_URL;
+          reelsModalIframe.src = ARCHIVE_EMBED_URL;
         }
       }
 
@@ -846,9 +854,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeVerticalFullscreen() {
       if (!reelsModal) return;
 
-      // Stop video: reset iframe src ke blank
-      if (reelsModalVideo) {
-        try { reelsModalVideo.src = "about:blank"; } catch (err) {}
+      const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
+      const reelsModalIframe = document.getElementById("reelsModalVideoPlayer");
+
+      if (reelsModalVideoTag) {
+        try { reelsModalVideoTag.pause(); } catch (err) {}
+      }
+      if (reelsModalIframe) {
+        try { reelsModalIframe.src = "about:blank"; } catch (err) {}
       }
 
       reelsModal.classList.remove("active");
@@ -1218,8 +1231,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const inlineIframe = document.getElementById("inlinePhoneIframe");
         const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
         const phonePosterImg = document.getElementById("phonePosterImg");
+        const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
         if (inlineVideo && !inlineVideo.paused) {
           try { inlineVideo.pause(); } catch(e) {}
+        }
+        if (reelsModalVideoTag && !reelsModalVideoTag.paused) {
+          try { reelsModalVideoTag.pause(); } catch(e) {}
         }
         if (inlineIframe && inlineIframe.src && inlineIframe.src !== "about:blank") {
           try { inlineIframe.src = "about:blank"; } catch(e) {}

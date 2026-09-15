@@ -5224,37 +5224,44 @@ video:-webkit-full-screen,
 
   /* 13. Halaman Mini Movie: Smartphone Mockup Bebas, Vertikal Elegan & Sinematik */
   .page-minimovie {
-    overflow: visible !important;
+    overflow: hidden !important;
   }
   .page-minimovie .page-inner-movie {
-    padding: 0 !important;
-    overflow: visible !important;
+    padding: calc(1.5 * var(--cqh)) calc(2.5 * var(--cqw)) calc(1.5 * var(--cqh)) !important;
+    overflow: hidden !important;
     position: relative !important;
     height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     align-items: center !important;
+    box-sizing: border-box !important;
   }
   .page-minimovie .movie-board-header {
-    position: absolute !important;
-    top: -calc(5.5 * var(--cqh)) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 60 !important;
-    margin: 0 !important;
-    padding: calc(0.6 * var(--cqh)) calc(3 * var(--cqw)) !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: 10 !important;
+    margin: 0 auto calc(1.2 * var(--cqh)) !important;
+    padding: calc(0.7 * var(--cqh)) calc(3.5 * var(--cqw)) !important;
     white-space: nowrap !important;
     border-radius: 18px !important;
+    display: table !important;
+    flex-shrink: 0 !important;
   }
   .page-minimovie .movie-board-header .wooden-board-title {
     font-size: calc(3.2 * var(--cqh)) !important;
+    letter-spacing: 1.5px !important;
+    line-height: 1.1 !important;
   }
   .page-minimovie .reels-theater-layout {
     overflow: visible !important;
     position: relative !important;
     width: 100% !important;
     height: 100% !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -5264,30 +5271,32 @@ video:-webkit-full-screen,
     position: relative !important;
     width: 100% !important;
     height: 100% !important;
+    max-height: 100% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
   }
   .page-minimovie .reels-phone-mockup {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    height: min(54vh, 440px) !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    height: 100% !important;
+    max-height: calc(72 * var(--cqh)) !important;
     width: auto !important;
     aspect-ratio: 9 / 16 !important;
-    max-width: 82vw !important;
+    max-width: 84vw !important;
     padding: 4px 4px 6px !important;
     border: 3.5px solid #734925 !important;
-    border-radius: 28px !important;
+    border-radius: 26px !important;
     background: #080f1a !important;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.35) !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 18px rgba(212, 175, 55, 0.3) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
-    z-index: 55 !important;
+    z-index: 5 !important;
   }
   .page-minimovie .phone-speaker-notch {
     display: block !important;
