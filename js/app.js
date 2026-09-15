@@ -1818,7 +1818,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (progress < 50) {
         loadingHint.textContent = '🎬 Ada mini movie di halaman terakhir — jangan dilewat!';
       } else if (progress < 67) {
-        loadingHint.textContent = '🏆 Cek halaman Awards untuk tahu siapa yang menang penghargaan';
+        loadingHint.textContent = '📸 Setiap foto kru punya quote & cerita — klik untuk baca!';
       } else if (progress < 82) {
         loadingHint.textContent = '🎵 Klik tombol 🔊 di toolbar bawah untuk atur musik';
       } else if (progress < 92) {
