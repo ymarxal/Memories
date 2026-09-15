@@ -77,8 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
             updateBtnState(true);
             const musicTip = document.getElementById("loadingMusicTip");
             if (musicTip) {
-              musicTip.textContent = "🎵 Memutar: One Piece - Memories";
+              musicTip.textContent = "🎵 Musik sedang memutar ✓";
               musicTip.style.color = "#a3e635";
+              musicTip.style.borderColor = "rgba(163, 230, 53, 0.6)";
+              musicTip.style.background = "rgba(163, 230, 53, 0.12)";
             }
             userEvents.forEach(e => document.removeEventListener(e, onUserGesture));
           })
@@ -1810,17 +1812,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (loadingHint) {
       if (progress < 15) {
-        loadingHint.textContent = 'Menyiapkan kapal pelayaran Nawala... 🗺️';
-      } else if (progress < 35) {
-        loadingHint.textContent = 'Memuat arsip 35 kru & dokumentasi divisi... ⚓';
-      } else if (progress < 55) {
-        loadingHint.textContent = 'Mengalunkan alunan lagu One Piece - Memories... 🎵';
-      } else if (progress < 75) {
-        loadingHint.textContent = 'Menata lembaran buku 3D & flip animation... 📖';
+        loadingHint.textContent = '👆 Geser / klik tepi buku untuk membalik halaman';
+      } else if (progress < 32) {
+        loadingHint.textContent = '🖼️ Klik foto atau poster kru untuk baca pesan lengkapnya';
+      } else if (progress < 50) {
+        loadingHint.textContent = '🎬 Ada mini movie di halaman terakhir — jangan dilewat!';
+      } else if (progress < 67) {
+        loadingHint.textContent = '🏆 Cek halaman Awards untuk tahu siapa yang menang penghargaan';
+      } else if (progress < 82) {
+        loadingHint.textContent = '🎵 Klik tombol 🔊 di toolbar bawah untuk atur musik';
       } else if (progress < 92) {
-        loadingHint.textContent = 'Menyiapkan video perjalanan & elemen interaktif... ✨';
+        loadingHint.textContent = '🔍 Gunakan tombol zoom di toolbar untuk memperbesar halaman';
       } else {
-        loadingHint.textContent = 'Semua elemen siap! Selamat menikmati Memories Nawala ⛵✨';
+        loadingHint.textContent = '✨ Semua siap! Selamat bernostalgia bersama Batch 18 Nawala';
       }
     }
 
