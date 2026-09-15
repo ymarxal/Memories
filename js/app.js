@@ -1824,7 +1824,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (progress < 92) {
         loadingHint.textContent = '🔍 Gunakan tombol zoom di toolbar untuk memperbesar halaman';
       } else {
-        loadingHint.textContent = '✨ Semua siap! Selamat bernostalgia bersama Batch 18 Nawala';
+        loadingHint.textContent = '🎉 Siap! Nikmati perjalanan Batch 18 Nawala bersama-sama!';
       }
     }
 
