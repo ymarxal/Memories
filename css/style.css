@@ -4744,14 +4744,14 @@ video:-webkit-full-screen,
   }
 
   .division-main-title {
-    font-size: calc(2.8 * var(--cqh)) !important;
+    font-size: calc(3.4 * var(--cqh)) !important;
     letter-spacing: calc(0.15 * var(--cqw)) !important;
     text-align: center !important;
     line-height: 1.15 !important;
   }
 
   .title-anchor {
-    font-size: calc(2.8 * var(--cqh)) !important;
+    font-size: calc(3.4 * var(--cqh)) !important;
   }
 
   .division-body-card {
