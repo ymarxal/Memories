@@ -946,7 +946,7 @@ const BOOK_CONFIG = {
       "bounty": "240,000,000",
       "quote": "Different dreams, one unforgettable journey.",
       "memorable": "Senang bisa ketemu sama teman-teman, Empat bulan bersama Batch 18 ternyata bukan cuma tentang magang, tapi juga tentang banyak cerita, tawa, capek, kekacauan kecil, dan momen-momen sederhana yang akhirnya jadi kenangan. Awalnya kita semuanya datang dengan tujuan masing-masing, tapi perlahan bisa saling mengenal, bekerja sama, dan tumbuh bersama. Terima kasih sudah membuat perjalanan di Rumah BUMN jadi jauh lebih seru dan berkesan.",
-      "achievement": "Mengarahkan identitas visual yearbook, kurasi dokumentasi, dan materi publikasi maritim batch 18",
+      "achievement": "Mengarahkan identitas visual yearbook, kurasi dokumentasi, dan materi publikasi batch 18",
       "messageBatch": "pesan saya setelah kapal Nawala berlabuh, semoga kita semua bisa melanjutkan perjalanan ke tujuan masing-masing tanpa melupakan orang-orang yang pernah satu kapal. Tetap semangat, terus berkembang, jangan takut mencoba hal baru, dan yang paling penting jangan sampai jadi asing. Kalau nanti sudah sukses dengan jalan masing-masing, jangan lupa saling kabar dan sempatkan untuk bertemu lagi. luvv nawala",
       "oneWord": "Memori"
     },
