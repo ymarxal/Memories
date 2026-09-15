@@ -2,8 +2,9 @@
 node_modules/
 .env*
 
-# File video besar (> 100MB tidak bisa di-push ke GitHub)
-assets/video/
+# File video mentah besar (> 100MB tidak bisa di-push ke GitHub)
+assets/video/*.MOV
+assets/video/*.mov
 
 # Folder design reference lokal
 assets/referensi_desain/

@@ -1,5 +1,6 @@
-# File video besar — tidak di-deploy ke Vercel (embed via Google Drive)
-assets/video/
+# File video mentah besar (> 100MB)
+assets/video/*.MOV
+assets/video/*.mov
 
 # Folder design reference lokal
 assets/referensi_desain/

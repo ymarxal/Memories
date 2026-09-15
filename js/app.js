@@ -700,14 +700,6 @@ document.addEventListener("DOMContentLoaded", () => {
                          style="width: 100%; height: 100%; object-fit: cover; background: #000; display: none; position: absolute; inset: 0; z-index: 2;">
                     <source src="${encodeURI(miniMovieData.source)}" type="video/mp4">
                   </video>
-                  <iframe id="inlinePhoneIframe"
-                          class="reels-video"
-                          src="about:blank"
-                          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                          allowfullscreen
-                          style="width: 100%; height: 100%; border: 0; display: none; position: absolute; inset: 0; z-index: 2; background: #000;"
-                          title="${miniMovieData.title}">
-                  </iframe>
                   <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video langsung">
                     <div class="phone-play-btn-circle">
                       <svg viewBox="0 0 24 24" width="32" height="32" fill="#ffffff">
@@ -770,16 +762,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const reelsModalVideo = document.getElementById("reelsModalVideoPlayer");
     const reelsDirectLinkBtn = document.getElementById("reelsDirectLinkBtn");
 
-    const ARCHIVE_EMBED_URL = (BOOK_CONFIG.miniMovie && BOOK_CONFIG.miniMovie.embedUrl) || "https://archive.org/embed/img-0243_202609";
-    const ARCHIVE_DIRECT_URL = (BOOK_CONFIG.miniMovie && BOOK_CONFIG.miniMovie.source) || "https://archive.org/download/img-0243_202609/IMG_0243.MOV";
+    const LOCAL_VIDEO_URL = (BOOK_CONFIG.miniMovie && BOOK_CONFIG.miniMovie.source) || "assets/video/minimovie.mp4";
 
     if (reelsDirectLinkBtn) {
-      reelsDirectLinkBtn.href = ARCHIVE_DIRECT_URL;
+      reelsDirectLinkBtn.href = LOCAL_VIDEO_URL;
     }
 
     function playInlineVideo() {
       const inlineVideo = document.getElementById("inlinePhoneVideo");
-      const inlineIframe = document.getElementById("inlinePhoneIframe");
       const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
       const phonePosterImg = document.getElementById("phonePosterImg");
 
@@ -793,18 +783,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const playPromise = inlineVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
-            console.warn("Autoplay inline video dicegah browser, coba iframe:", err);
-            if (inlineIframe) {
-              inlineVideo.style.display = "none";
-              inlineIframe.style.display = "block";
-              inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
-            }
+            console.warn("Autoplay inline video dicegah browser:", err);
           });
         }
-      } else if (inlineIframe) {
-        if (phonePosterImg) phonePosterImg.style.display = "none";
-        inlineIframe.style.display = "block";
-        inlineIframe.src = ARCHIVE_EMBED_URL + "?autoplay=1";
       }
 
       // Musik utama (bgMusic) TETAP BERPUTAR sesuai permintaan user
@@ -814,21 +795,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!reelsModal) return;
 
       const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
-      const reelsModalIframe = document.getElementById("reelsModalVideoPlayer");
-
       if (reelsModalVideoTag) {
         reelsModalVideoTag.style.display = "block";
-        if (reelsModalIframe) reelsModalIframe.style.display = "none";
         try {
           reelsModalVideoTag.currentTime = 0;
           reelsModalVideoTag.play().catch(() => {});
         } catch (e) {}
-      } else if (reelsModalIframe) {
-        const currentSrc = reelsModalIframe.src || "";
-        const needsLoad = !currentSrc || currentSrc === "about:blank" || currentSrc === location.href;
-        if (needsLoad) {
-          reelsModalIframe.src = ARCHIVE_EMBED_URL;
-        }
       }
 
       reelsModal.classList.add("active");
@@ -840,13 +812,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!reelsModal) return;
 
       const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
-      const reelsModalIframe = document.getElementById("reelsModalVideoPlayer");
-
       if (reelsModalVideoTag) {
         try { reelsModalVideoTag.pause(); } catch (err) {}
-      }
-      if (reelsModalIframe) {
-        try { reelsModalIframe.src = "about:blank"; } catch (err) {}
       }
 
       reelsModal.classList.remove("active");
@@ -1213,7 +1180,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const miniMovieIndex = pageFlip.getPageCount() - 2;
       if (cur !== miniMovieIndex) {
         const inlineVideo = document.getElementById("inlinePhoneVideo");
-        const inlineIframe = document.getElementById("inlinePhoneIframe");
         const phoneScreenWrapper = document.getElementById("phoneScreenWrapper");
         const phonePosterImg = document.getElementById("phonePosterImg");
         const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
@@ -1223,13 +1189,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (reelsModalVideoTag && !reelsModalVideoTag.paused) {
           try { reelsModalVideoTag.pause(); } catch(e) {}
         }
-        if (inlineIframe && inlineIframe.src && inlineIframe.src !== "about:blank") {
-          try { inlineIframe.src = "about:blank"; } catch(e) {}
-        }
         if (phoneScreenWrapper) phoneScreenWrapper.classList.remove("is-playing");
         if (phonePosterImg) phonePosterImg.style.display = "block";
         if (inlineVideo) inlineVideo.style.display = "none";
-        if (inlineIframe) inlineIframe.style.display = "none";
       }
       playPageFlipSound();
       updateUIState();
