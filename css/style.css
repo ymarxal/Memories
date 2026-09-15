@@ -4732,26 +4732,32 @@ video:-webkit-full-screen,
   }
 
   .division-top-header {
-    margin-bottom: calc(0.8 * var(--cqh)) !important;
+    margin-bottom: calc(0.5 * var(--cqh)) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
   }
 
   .division-title-badge {
-    padding: calc(0.5 * var(--cqh)) calc(2.2 * var(--cqw)) !important;
-    gap: calc(1.2 * var(--cqw)) !important;
-    border-radius: 22px !important;
-    max-width: 95% !important;
+    padding: calc(0.3 * var(--cqh)) calc(2.0 * var(--cqw)) !important;
+    gap: calc(1.0 * var(--cqw)) !important;
+    border-radius: 20px !important;
+    max-width: 96% !important;
     box-sizing: border-box !important;
   }
 
   .division-main-title {
-    font-size: calc(3.4 * var(--cqh)) !important;
-    letter-spacing: calc(0.15 * var(--cqw)) !important;
+    font-size: clamp(14px, calc(5.4 * var(--cqh)), 19px) !important;
+    letter-spacing: 1.2px !important;
     text-align: center !important;
     line-height: 1.15 !important;
+    font-weight: 800 !important;
   }
 
   .title-anchor {
-    font-size: calc(3.4 * var(--cqh)) !important;
+    font-size: clamp(13px, calc(4.6 * var(--cqh)), 17px) !important;
+    line-height: 1 !important;
   }
 
   .division-body-card {
