@@ -4381,7 +4381,7 @@ video:-webkit-full-screen,
   .kru-img.kru-img-31 {
     transform: scale(1.05) !important;
     transform-origin: center center !important;
-    object-position: center 28% !important;
+    object-position: center 40% !important;
   }
   /* Ahmad Arif */
   .wanted-poster[data-crew-id="32"] .wanted-photo-slot img.kru-img,
@@ -4976,7 +4976,7 @@ video:-webkit-full-screen,
   .award-person-img[src*="kru31"] {
     transform: scale(1.05) !important;
     transform-origin: center center !important;
-    object-position: center 28% !important;
+    object-position: center 40% !important;
   }
   .award-card-individual .award-plaque-title {
     font-size: calc(2.5 * var(--cqh)) !important;
