@@ -35,23 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!bgMusic) return;
 
     const musicSrc = BOOK_CONFIG.music?.source || "assets/lagu/Memories.mp3";
-    bgMusic.src = musicSrc;
-    bgMusic.volume = 0.5;
+    if (!bgMusic.src || !bgMusic.src.includes("Memories.mp3")) {
+      bgMusic.src = musicSrc;
+    }
+    bgMusic.volume = 0.65;
     bgMusic.preload = "auto";
-
-    const START_TIME = 28; // Mulai langsung dari reff Memories (detik 28)
-
-    // Pre-seek ke detik 28 begitu metadata lagu siap agar tidak ada jeda buffering saat play
-    const applyStartTime = () => {
-      try {
-        if (bgMusic.currentTime < START_TIME) {
-          bgMusic.currentTime = START_TIME;
-        }
-      } catch (err) {}
-    };
-
-    bgMusic.addEventListener("loadedmetadata", applyStartTime, { once: true });
-    bgMusic.addEventListener("canplay", applyStartTime, { once: true });
 
     const updateBtnState = (playing) => {
       isMusicPlaying = playing;
@@ -70,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startPlayback = () => {
       if (isMusicPlaying) return;
-      applyStartTime();
       bgMusic.volume = 0.65;
       const playPromise = bgMusic.play();
       if (playPromise !== undefined) {
@@ -85,12 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
             userEvents.forEach(e => document.removeEventListener(e, onUserGesture));
           })
           .catch(() => {
-            // Autoplay dicegah browser, menunggu interaksi sentuhan
+            // Jika autoplay audio tertahan kebijakan browser, menunggu gesture apapun di layar
           });
       }
     };
 
-    // Coba putar langsung
+    // Langsung putar dari awal lagu (detik 0 - Full Intro & Song)
     startPlayback();
 
     const userEvents = ["click", "touchstart", "touchend", "pointerdown", "keydown"];
@@ -99,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     userEvents.forEach(e => document.addEventListener(e, onUserGesture, { passive: true }));
 
-    // Global helper agar tombol lain bisa memicu play jika belum jalan
+    // Global helper agar elemen lain bisa memicu play jika audio sempat tertahan
     window.ensureAudioPlaying = () => {
       if (bgMusic && bgMusic.paused) {
         startPlayback();
@@ -111,10 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
       musicBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         if (bgMusic.paused) {
-          applyStartTime();
           bgMusic.play().then(() => {
             updateBtnState(true);
-            applyStartTime();
           }).catch(() => {});
         } else {
           bgMusic.pause();
@@ -1759,44 +1744,56 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(updateUIState, 150);
 
   // ===== REAL ASSET PRELOADER (Halaman Depan, Cover & Kru) =====
+  // Preload semua gambar utama di background secara paralel selama loading 15-20 detik
   const CRITICAL_IMAGES = [
-    'assets/images/fix.png',
-    'assets/images/slide2.png',
-    'assets/images/management1.png',
-    'assets/images/management2.png',
-    'assets/images/fo.jpg',
-    'assets/images/logo2.png',
-    'assets/images/LOGOKU.png',
+    'assets/images/sampul fix.png',
     'assets/images/background 1.png',
     'assets/images/background 2.png',
     'assets/images/background 3.png',
     'assets/images/background 4.png',
-    'assets/kru/kru1.png',
-    'assets/kru/kru2.png',
-    'assets/kru/kru3.png',
-    'assets/kru/kru4.png',
-    'assets/kru/kru5.png',
-    'assets/kru/kru6.png',
-    'assets/kru/kru7.png',
-    'assets/kru/kru8.png',
-    'assets/images/minimovie_poster.jpg'
+    'assets/images/background 5.png',
+    'assets/images/background 6.png',
+    'assets/images/management1.png',
+    'assets/images/management2.png',
+    'assets/images/fo.jpg',
+    'assets/images/copro.jpg',
+    'assets/images/legal.png',
+    'assets/images/sms.jpg',
+    'assets/images/smer.jpg',
+    'assets/images/ecm.jpg',
+    'assets/images/digmar.jpg',
+    'assets/images/pd.JPG',
+    'assets/images/logo2.png',
+    'assets/images/LOGOKU.png',
+    'assets/images/minimovie_poster.jpg',
+    'assets/images/cd.png',
+    'assets/images/halaman terakhir 1.png',
+    'assets/images/halaman terakhir 2.png',
+    'assets/images/halaman terakhir 3.png',
+    'assets/images/halaman terakhir 4.png',
+    'assets/images/halaman terakhir 5.png'
   ];
 
-  // Preload semua gambar utama di background secara paralel
+  // Tambahkan foto seluruh kru 1 s/d 35 ke antrean preloader
+  for (let i = 1; i <= 35; i++) {
+    CRITICAL_IMAGES.push(`assets/kru/kru${i}.png`);
+  }
+
+  // Preload aset di background
   CRITICAL_IMAGES.forEach((src) => {
     const img = new Image();
     img.src = src;
   });
 
-  // ===== 10-DETIK LOADING SCREEN & REFF MEMORIES =====
+  // ===== 18-DETIK LOADING SCREEN & FULL MEMORIES =====
   const loadingScreen = document.getElementById('appLoadingScreen');
   const loadingBar = document.getElementById('loadingBarFill');
   const loadingHint = document.getElementById('loadingHint');
   const loadingMusicTip = document.getElementById('loadingMusicTip');
 
-  const TOTAL_DURATION_MS = 10000; // 10 Detik Penuh agar semua aset siap & reff terputar
-  const TICK_INTERVAL = 80; // Update progress bar tiap 80ms
-  const TOTAL_TICKS = TOTAL_DURATION_MS / TICK_INTERVAL; // 125 langkah
+  const TOTAL_DURATION_MS = 18000; // 18 Detik (rentang 15-20 detik) agar semua aset & elemen benar-benar siap
+  const TICK_INTERVAL = 100; // Update progress bar tiap 100ms
+  const TOTAL_TICKS = TOTAL_DURATION_MS / TICK_INTERVAL; // 180 langkah
   let elapsedTicks = 0;
   let isDismissed = false;
 
@@ -1816,7 +1813,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 450);
   }
 
-  // Sentuh / klik di mana saja pada layar loading langsung menyalakan musik tanpa delay
+  // Sentuh / interaksi apapun pada layar loading langsung menyalakan musik tanpa delay
   if (loadingScreen) {
     const triggerAudioOnTouch = () => {
       if (typeof window.ensureAudioPlaying === 'function') {
@@ -1828,7 +1825,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadingScreen.addEventListener('click', triggerAudioOnTouch, { passive: true });
   }
 
-  // Animasi progress bar 0% s.d. 100% tepat selama 10 detik
+  // Animasi progress bar 0% s.d. 100% selama 18 detik (15-20 detik)
   const barInterval = setInterval(() => {
     elapsedTicks++;
     const progress = Math.min(Math.round((elapsedTicks / TOTAL_TICKS) * 100), 100);
@@ -1838,16 +1835,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (loadingHint) {
-      if (progress < 25) {
+      if (progress < 15) {
         loadingHint.textContent = 'Menyiapkan kapal pelayaran Nawala... 🗺️';
-      } else if (progress < 50) {
-        loadingHint.textContent = 'Memuat arsip foto kru & kenangan... ⚓';
+      } else if (progress < 35) {
+        loadingHint.textContent = 'Memuat arsip 35 kru & dokumentasi divisi... ⚓';
+      } else if (progress < 55) {
+        loadingHint.textContent = 'Mengalunkan alunan lagu One Piece - Memories... 🎵';
       } else if (progress < 75) {
-        loadingHint.textContent = 'Mengalunkan reff Memories Batch 18... 🎵';
-      } else if (progress < 98) {
-        loadingHint.textContent = 'Menata lembaran yearbook... ✨';
+        loadingHint.textContent = 'Menata lembaran buku 3D & flip animation... 📖';
+      } else if (progress < 92) {
+        loadingHint.textContent = 'Menyiapkan video perjalanan & elemen interaktif... ✨';
       } else {
-        loadingHint.textContent = 'Semua siap! Selamat menikmati Memories Nawala ✨';
+        loadingHint.textContent = 'Semua elemen siap! Selamat menikmati Memories Nawala ⛵✨';
       }
     }
 

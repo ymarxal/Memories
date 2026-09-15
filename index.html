@@ -39,7 +39,7 @@
         <div class="loading-bar-fill" id="loadingBarFill"></div>
       </div>
       <div class="loading-hint" id="loadingHint">Menyiapkan kapal pelayaran Nawala... 🗺️</div>
-      <div class="loading-music-tip" id="loadingMusicTip">🎵 Sentuh layar jika musik belum berbunyi</div>
+      <div class="loading-music-tip" id="loadingMusicTip">🎵 Mengalunkan lagu: One Piece - Memories</div>
     </div>
   </div>
 
@@ -79,10 +79,22 @@
       <button class="toolbar-btn music-btn" id="musicBtn" title="Putar/Jeda Musik Latar" aria-label="Musik Latar">🎵</button>
     </nav>
 
-    <!-- Background Audio Element untuk Musik Otomatis -->
-    <audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline>
+    <!-- Background Audio Element untuk Musik Otomatis (Full Lagu dari 00:00) -->
+    <audio id="bgMusic" src="assets/lagu/Memories.mp3" loop preload="auto" playsinline webkit-playsinline autoplay>
       <source src="assets/lagu/Memories.mp3" type="audio/mpeg">
     </audio>
+    <script>
+      (function() {
+        var a = document.getElementById('bgMusic');
+        if (a) {
+          a.volume = 0.65;
+          var p = a.play();
+          if (p !== undefined) {
+            p.catch(function() {});
+          }
+        }
+      })();
+    </script>
 
     <!-- Modal Detail Profil & Pesan Kru (Parchment Card) -->
     <div class="quote-modal-overlay" id="quoteModal" aria-hidden="true" role="dialog" aria-labelledby="modalCrewName">
@@ -178,7 +190,7 @@
 
   <!-- Scripts -->
   <script src="js/page-flip.browser.min.js"></script>
-  <script src="js/book-config.js?v=14.0"></script>
-  <script src="js/app.js?v=13.0"></script>
+  <script src="js/book-config.js?v=15.0"></script>
+  <script src="js/app.js?v=15.0"></script>
 </body>
 </html>
