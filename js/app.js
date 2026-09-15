@@ -149,11 +149,11 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     bookElement.appendChild(coverPage);
 
-    // [Slide 2] Halaman 1: Presented by... (slide2.png)
+    // [Slide 2] Halaman 1: Presented by... (presentby.png)
     const page1 = document.createElement("div");
     page1.className = "page full-slide-page";
     page1.innerHTML = `
-      <img src="assets/images/slide2.png" alt="Batch 18 Yearbook Presented by..." style="width: 100%; height: 100%; object-fit: contain; background: #000;">
+      <img src="assets/images/presentby.png?v=18.0" alt="Batch 18 Yearbook Presented by..." style="width: 100%; height: 100%; object-fit: contain; background: #000;">
     `;
     bookElement.appendChild(page1);
 
@@ -1720,6 +1720,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Preload semua gambar utama di background secara paralel selama loading 15-20 detik
   const CRITICAL_IMAGES = [
     'assets/images/sampul fix.png',
+    'assets/images/presentby.png?v=18.0',
     'assets/images/background 1.png',
     'assets/images/background 2.png',
     'assets/images/background 3.png',

@@ -15,17 +15,17 @@ const BOOK_CONFIG = {
       {
         "name": "MARCELINO",
         "role": "Concept & Content",
-        "photo": "assets/images/slide2.png"
+        "photo": "assets/images/presentby.png?v=18.0"
       },
       {
         "name": "JULIANA",
         "role": "Creative Director & Documentation",
-        "photo": "assets/images/slide2.png"
+        "photo": "assets/images/presentby.png?v=18.0"
       },
       {
         "name": "AHMAD ARIF",
         "role": "Graphic Designer & Layout Artist",
-        "photo": "assets/images/slide2.png"
+        "photo": "assets/images/presentby.png?v=18.0"
       }
     ]
   },
