@@ -504,7 +504,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="crest-filigree-line"></span>
               </div>
               <div class="crest-center-body">
-                <span class="crest-sub-title">INTERNSHIP RUMAH BUMN MAKASSAR</span>
                 <h2 class="crest-main-title">BATCH 18 AWARDS</h2>
               </div>
               <div class="crest-side-ornament right-wing">

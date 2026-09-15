@@ -3740,9 +3740,9 @@ video:-webkit-full-screen,
 
 .crest-main-title {
   font-family: 'Cinzel', 'Cinzel Decorative', 'Plus Jakarta Sans', Georgia, serif;
-  font-size: 0.74rem;
+  font-size: 0.85rem;
   font-weight: 900;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   margin: 0;
   line-height: 1.15;
@@ -5014,9 +5014,9 @@ video:-webkit-full-screen,
   }
 
   .crest-main-title {
-    font-size: calc(3.0 * var(--cqh)) !important;
+    font-size: clamp(12px, calc(3.4 * var(--cqh)), 16px) !important;
     line-height: 1.15 !important;
-    letter-spacing: calc(0.15 * var(--cqw)) !important;
+    letter-spacing: calc(0.2 * var(--cqw)) !important;
     white-space: normal !important;
     text-align: center !important;
   }
