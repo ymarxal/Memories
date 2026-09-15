@@ -695,12 +695,12 @@ document.addEventListener("DOMContentLoaded", () => {
               <!-- Frame Smartphone / Reels 9:16 Vertikal di Tengah Halaman -->
               <div class="reels-phone-mockup">
                 <div class="phone-speaker-notch"></div>
-                <div class="phone-screen" id="phoneScreenWrapper" style="cursor: pointer; position: relative;" title="Klik untuk memutar video langsung">
+                <div class="phone-screen" id="phoneScreenWrapper" style="cursor: pointer; position: relative;" title="Klik untuk memutar video layar penuh">
                   <img src="${encodeURI(miniMovieData.poster)}" 
                        alt="${miniMovieData.title}" 
                        id="phonePosterImg"
                        class="reels-video"
-                       style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0;"
+                       style="width: 100%; height: 100%; object-fit: contain; display: block; position: absolute; inset: 0;"
                        onerror="this.src='assets/images/LOGOKU.png';">
                   <video id="inlinePhoneVideo"
                          class="reels-video"
@@ -709,16 +709,16 @@ document.addEventListener("DOMContentLoaded", () => {
                          controls
                          preload="metadata"
                          poster="${encodeURI(miniMovieData.poster)}"
-                         style="width: 100%; height: 100%; object-fit: cover; background: #000; display: none; position: absolute; inset: 0; z-index: 2;">
+                         style="width: 100%; height: 100%; object-fit: contain; background: #000; display: none; position: absolute; inset: 0; z-index: 2;">
                     <source src="${encodeURI(miniMovieData.source)}" type="video/mp4">
                   </video>
-                  <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video langsung">
+                  <div class="phone-play-overlay" id="phonePlayOverlay" title="Klik untuk memutar video layar penuh">
                     <div class="phone-play-btn-circle">
                       <svg viewBox="0 0 24 24" width="32" height="32" fill="#ffffff">
                         <path d="M8 5v14l11-7z"/>
                       </svg>
                     </div>
-                    <span class="phone-play-label">PUTAR VIDEO</span>
+                    <span class="phone-play-label">PUTAR VIDEO ⛶</span>
                   </div>
                 </div>
                 <span class="phone-home-indicator"></span>
@@ -806,11 +806,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function openVerticalFullscreen() {
       if (!reelsModal) return;
 
+      const inlineVideo = document.getElementById("inlinePhoneVideo");
+      if (inlineVideo && !inlineVideo.paused) {
+        try { inlineVideo.pause(); } catch (e) {}
+      }
+
       const reelsModalVideoTag = document.getElementById("reelsModalVideoTag");
       if (reelsModalVideoTag) {
         reelsModalVideoTag.style.display = "block";
         try {
-          reelsModalVideoTag.currentTime = 0;
+          if (inlineVideo && inlineVideo.currentTime > 0) {
+            reelsModalVideoTag.currentTime = inlineVideo.currentTime;
+          } else {
+            reelsModalVideoTag.currentTime = 0;
+          }
           reelsModalVideoTag.play().catch(() => {});
         } catch (e) {}
       }
@@ -857,17 +866,9 @@ document.addEventListener("DOMContentLoaded", () => {
       el.onclick = (e) => { e.stopPropagation(); fn(e); };
     }
 
-    // Pasang event listener: klik di HP memutar video LANGSUNG di layar mockup
-    bindTap(phonePlayOverlay, (e) => {
-      playInlineVideo();
-    });
-    bindTap(phoneScreenWrapper, (e) => {
-      if (!phoneScreenWrapper.classList.contains("is-playing")) {
-        playInlineVideo();
-      }
-    });
-
-    // Tombol Layar Penuh di samping kanan HP tetap membuka modal
+    // Klik tombol play / layar mockup langsung membuka teater layar penuh vertikal (format asli reels 9:16)
+    bindTap(phonePlayOverlay, () => openVerticalFullscreen());
+    bindTap(phoneScreenWrapper, () => openVerticalFullscreen());
     bindTap(movieFullscreenBtn, () => openVerticalFullscreen());
 
     // Pasang event listener untuk tombol tutup video
